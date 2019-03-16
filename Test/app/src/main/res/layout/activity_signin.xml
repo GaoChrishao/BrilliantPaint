@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/gradient_3"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/signin_username"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/edittext_normal"
+        android:hint="用户名"
+        android:inputType="text"
+        android:padding="15dp"
+        android:textColor="@color/LogincolorText"
+        android:textColorHint="@color/LogincolorText"
+        app:layout_constraintBottom_toTopOf="@+id/signin_password"
+        app:layout_constraintDimensionRatio="5:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/signin_password"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="69dp"
+        android:background="@drawable/edittext_normal"
+        android:hint="密码"
+        android:inputType="textPassword"
+        android:padding="15dp"
+        android:textColor="@color/LogincolorText"
+        android:textColorHint="@color/LogincolorText"
+        app:layout_constraintBottom_toTopOf="@+id/signin_password_re"
+        app:layout_constraintDimensionRatio="5:1"
+        app:layout_constraintTop_toBottomOf="@+id/signin_username"
+        tools:layout_editor_absoluteX="60dp" />
+
+
+    <EditText
+        android:id="@+id/signin_password_re"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/edittext_normal"
+        android:hint="再次输入密码"
+        android:inputType="textPassword"
+        android:padding="15dp"
+        android:textColor="@color/LogincolorText"
+        android:textColorHint="@color/LogincolorText"
+        app:layout_constraintBottom_toTopOf="@+id/signin_btn_signin"
+        app:layout_constraintDimensionRatio="5:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signin_password" />
+
+
+    <Button
+        android:id="@+id/signin_btn_signin"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="200dp"
+        android:background="@drawable/edittext_normal_1"
+        android:text="注册"
+        android:textAllCaps="false"
+        android:textColor="@color/LogincolorText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signin_password_re" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

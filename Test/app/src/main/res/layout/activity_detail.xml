@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityDetail"
+    >
+    <ImageView
+        android:id="@+id/detail_showpic_pic"
+        android:transitionName="@string/s_pic"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="7:6"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/detail_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/background_hallnoround"
+        android:orientation="vertical"
+        android:transitionName="@string/s_layout1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_showpic_pic"></LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/detail_showpic_userPic"
+        android:transitionName="@string/s_userPic"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/user_pic"
+        app:civ_border_color="#FFFFFF"
+        app:civ_border_width="3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_showpic_pic" />
+
+    <TextView
+        android:id="@+id/detail_showpic_userName"
+        android:transitionName="@string/s_userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/item_showpic_userPic"
+        android:text="userName"
+        android:textColor="@color/colorTitle"
+        android:textSize="@dimen/userName_size"
+        app:layout_constraintStart_toEndOf="@+id/detail_showpic_userPic"
+        app:layout_constraintTop_toBottomOf="@+id/detail_showpic_pic" />
+
+    <TextView
+        android:id="@+id/detail_showpic_des"
+        android:transitionName="@string/s_des"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@+id/detail_showpic_userPic"
+        android:text="description"
+        android:textColor="@color/colorTitleSecond"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintStart_toEndOf="@+id/detail_showpic_userPic"
+        app:layout_constraintTop_toBottomOf="@+id/detail_showpic_userName" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

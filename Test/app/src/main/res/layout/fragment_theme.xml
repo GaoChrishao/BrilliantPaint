@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <LinearLayout
+        android:id="@+id/fragment_theme_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+        <LinearLayout
+            android:id="@+id/fragment_theme_layout_1"
+            android:background="@drawable/background_yuanjiao"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:padding="15dp">
+            <TextView
+                android:layout_marginTop="20dp"
+                android:text="1.自定义背景图片"
+                android:textColor="@color/colorTitle"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/theme_chooseBG"
+                    android:textColor="@color/colorTitle"
+                    android:background="@drawable/background_yuanjiao_btn"
+                    android:layout_marginRight="35dp"
+                    android:text="选择"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/theme_cancelBG"
+                    android:textColor="@color/colorTitle"
+                    android:background="@drawable/background_yuanjiao_btn"
+                    android:text="清除"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_theme_layout_2"
+            android:background="@drawable/background_yuanjiao"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:padding="15dp">
+            <TextView
+                android:layout_marginTop="20dp"
+                android:text="2.设置头像"
+                android:textColor="@color/colorTitle"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/theme_chooseUserpic"
+                    android:textColor="@color/colorTitle"
+                    android:background="@drawable/background_yuanjiao_btn"
+                    android:layout_marginRight="35dp"
+                    android:text="选择"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+</ScrollView>
+
