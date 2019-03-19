@@ -19,6 +19,7 @@ import android.view.WindowManager;
 
 import com.gaoch.test.adapter.LocalDatabaseHelper;
 import com.gaoch.test.myclass.FileMessage;
+import com.gaoch.test.myclass.User;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -209,6 +210,7 @@ public class Utility {
             float pic_width=bkg_scaled.getWidth();
             float pic_height=bkg_scaled.getHeight();
             Bitmap bkg_nedded=Bitmap.createBitmap(bkg_scaled,(((int)pic_width-(int)width)/2),0,(int)width,(int)height);
+            Log.e("SimWeather","剪裁后的图片:"+bkg_nedded.getWidth()+","+bkg_nedded.getHeight());
             return new BitmapDrawable(context.getResources(),bkg_nedded);
 
 
@@ -221,6 +223,7 @@ public class Utility {
             float pic_width=bkg_scaled.getWidth();
             float pic_height=bkg_scaled.getHeight();
             Bitmap bkg_nedded=Bitmap.createBitmap(bkg_scaled,0,((int)pic_height-(int)height)/2,(int)width,(int)height);
+            Log.e("SimWeather","剪裁后的图片:"+bkg_nedded.getWidth()+","+bkg_nedded.getHeight());
             return new BitmapDrawable(context.getResources(),bkg_nedded);
         }
     }
@@ -263,7 +266,7 @@ public class Utility {
         }
         return true;
     }
-    public static String saveBitmapToFile(Bitmap bitmap,String fileName,String fileType){
+    public static String saveBitmapToFile(Bitmap bitmap,int quality,String fileName,String fileType){
         File file = new File(filePath);
         if(!file.exists()){
             file.mkdirs();
@@ -282,7 +285,7 @@ public class Utility {
             Log.e("GGG","图片不存在");
             return null;
         }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
         try {
             fos.flush();
             fos.close();
@@ -364,12 +367,12 @@ public class Utility {
     /**
      * 上传文件到服务器
      * @param context
-     * @param path     上传服务器地址
-     * @param oldFilePath       本地文件的绝对路径
+     * @param servicePath     上传服务器地址
+     * @param localFilePath       本地文件的绝对路径
      * @return  接受到的文件在本地的绝对路径
      */
-    public static FileMessage uploadLogFile(Context context, String path, String oldFilePath)throws Exception{
-        URL url = new URL(path);
+    public static FileMessage uploadLogFile(Context context, String servicePath, String localFilePath)throws Exception{
+        URL url = new URL(servicePath);
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
 
         // 允许Input、Output，不使用Cache
@@ -394,22 +397,25 @@ public class Utility {
 
         // 取得文件的FileInputStream
 
-        FileInputStream fStream = new FileInputStream(oldFilePath);
+        FileInputStream fStream = new FileInputStream(localFilePath);
         // 设置每次写入1024bytes
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
 
         int length = -1;
         // 从文件读取数据至缓冲区
+        int sum=0;
         while ((length = fStream.read(buffer)) != -1) {
             // 将资料写入DataOutputStream中
             ds.write(buffer, 0, length);
+            sum+=length;
         }
+        Log.e("GGG","上传的图片大小为:"+(sum/8)/1024+"KB");
 
         ds.flush();
         fStream.close();
         ds.close();
-        Log.e("GGG","文件上传成功！上传文件为：" + oldFilePath);
+        Log.e("GGG","文件上传成功！上传文件为：" + localFilePath);
         //String filePath= downloadFile(new DataInputStream(con.getInputStream()),new File(oldFilePath).getName());
         //Log.e("GGG","文件下载成功！下载文件为：" + filePath);
 
@@ -428,6 +434,79 @@ public class Utility {
         FileMessage fileMessage = new Gson().fromJson(sb.toString(),FileMessage.class);
 
         return fileMessage;
+    }
+
+
+    /**
+     * 上传文件到服务器
+     * @param context
+     * @param servicePath     上传服务器地址
+     * @param localFilePath       本地文件的绝对路径
+     * @return  接受到的文件在本地的绝对路径
+     */
+    public static User uploadUserPicFile(Context context, String servicePath, String localFilePath)throws Exception{
+        URL url = new URL(servicePath);
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+
+        // 允许Input、Output，不使用Cache
+        con.setDoInput(true);
+        con.setDoOutput(true);
+        con.setUseCaches(false);
+
+        con.setConnectTimeout(100000);
+        con.setReadTimeout(100000);
+        // 设置传送的method=POST
+        con.setRequestMethod("POST");
+        //在一次TCP连接中可以持续发送多份数据而不会断开连接
+        con.setRequestProperty("Connection", "Keep-Alive");
+        //设置编码
+        con.setRequestProperty("Charset", "UTF-8");
+        //text/plain能上传纯文本文件的编码格式
+        con.setRequestProperty("Content-Type", "image/jpeg");
+        // con.setRequestProperty("Content-Type", "text/plain");
+
+        // 设置DataOutputStream
+        DataOutputStream ds = new DataOutputStream(con.getOutputStream());
+
+        // 取得文件的FileInputStream
+
+        FileInputStream fStream = new FileInputStream(localFilePath);
+        // 设置每次写入1024bytes
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int length = -1;
+        // 从文件读取数据至缓冲区
+        int sum=0;
+        while ((length = fStream.read(buffer)) != -1) {
+            // 将资料写入DataOutputStream中
+            ds.write(buffer, 0, length);
+            sum+=length;
+        }
+        Log.e("GGG","上传的图片大小为:"+(sum/8)/1024+"KB");
+
+        ds.flush();
+        fStream.close();
+        ds.close();
+        Log.e("GGG","文件上传成功！上传文件为：" + localFilePath);
+        //String filePath= downloadFile(new DataInputStream(con.getInputStream()),new File(oldFilePath).getName());
+        //Log.e("GGG","文件下载成功！下载文件为：" + filePath);
+
+        BufferedReader in = null;
+        StringBuilder sb = new StringBuilder();
+
+        in = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+        String str = null;
+        while ((str = in.readLine()) != null) {
+            sb.append(str);
+        }
+
+        Log.e("GGG",sb.toString());
+//        JSONObject jsonObject = null;
+//        jsonObject = new JSONObject(responseText);
+        User user = new Gson().fromJson(sb.toString(),User.class);
+
+        return user;
     }
 
     /**

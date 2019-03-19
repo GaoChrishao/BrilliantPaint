@@ -33,6 +33,7 @@ import com.gaoch.test.myclass.FileMessage;
 import com.gaoch.test.myclass.Style;
 import com.gaoch.test.myview.ShadowImageView;
 import com.gaoch.test.myview.ViewDialogFragment;
+import com.gaoch.test.util.Blur;
 import com.gaoch.test.util.ConstValue;
 import com.gaoch.test.util.Utility;
 
@@ -48,8 +49,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ActivityMake extends Activity {
     public  volatile String localpicname;
-    private Drawable pic_show,pic_after;
-    private Bitmap pic;
+    private Drawable pic_show;  //缩放后显示的图片
+    private Drawable pic_after;
+    private Bitmap pic;  //原图
     private boolean hasPic=false;
     private ImageView iv_add;
     private ShadowImageView iv_pic;
@@ -70,6 +72,7 @@ public class ActivityMake extends Activity {
     private LocalDatabaseHelper dbHelper;
     private List<Style>styleList;
     private List<Boolean> checkList;
+    private String makeType;
 
 
     @Override
@@ -93,6 +96,10 @@ public class ActivityMake extends Activity {
 
         iv_pic.setVisibility(View.GONE);
         ll_bottom.setVisibility(View.GONE);
+        makeType=getIntent().getStringExtra(ConstValue.key_makeType);
+        if(makeType==null||makeType.equals("")){
+            makeType=ConstValue.type_make_strange;
+        }
         initData();
         setClickEvent();
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll_bottom.getLayoutParams();
@@ -101,7 +108,7 @@ public class ActivityMake extends Activity {
         if(bkgFile.exists()&&bkgFile.isFile()){
             layout_bkg.setBackground(Drawable.createFromPath(ConstValue.getBkg_blurPath(getApplicationContext())));
         }else{
-            layout_bkg.setBackground(getResources().getDrawable(R.drawable.bkg_2));
+            layout_bkg.setBackground(new BitmapDrawable(getResources(), Blur.bkg));
         }
     }
 
@@ -118,7 +125,7 @@ public class ActivityMake extends Activity {
                     //放小动画
                     Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.view_scale_larger_r);
                     viewHolder.itemView.startAnimation(animation);
-                    Log.e("GGG","取消颜色:"+position);
+                  //  Log.e("GGG","取消颜色:"+position);
                 }else{
                     //之前未选中
                     choseMakeAdapter.checkList.set(position,true);
@@ -128,7 +135,7 @@ public class ActivityMake extends Activity {
                     Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.view_scale_larger);
                     viewHolder.itemView.startAnimation(animation);
 
-                    Log.e("GGG","选中:"+position);
+                 //   Log.e("GGG","选中:"+position);
                     if(nowPosition!=-1){
                         //将之前选过的去除选中状态
                         if(nowPosition>=layoutManager.findFirstVisibleItemPosition()&&nowPosition<=layoutManager.findLastVisibleItemPosition()){
@@ -137,7 +144,7 @@ public class ActivityMake extends Activity {
                             //放小动画
                             Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.view_scale_larger_r);
                             holder.itemView.startAnimation(animation1);
-                            Log.e("GGG","取消颜色:"+nowPosition);
+                           // Log.e("GGG","取消颜色:"+nowPosition);
                         }else{
                             choseMakeAdapter.notifyItemChanged(nowPosition);
                         }
@@ -188,10 +195,17 @@ public class ActivityMake extends Activity {
                     @Override
                     public void run() {
                         try{
+                            File file=new File(ConstValue.filePath+"tmp.jpg");
+                            if(!file.exists()){
+                                Utility.saveBitmapToFile(pic,ConstValue.pic_quality,"tmp","jpg");
+                            }
                             SharedPreferences sp = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
-                            FileMessage fileMessage=Utility.uploadLogFile(getApplicationContext(), ConstValue.serverIp+"uploadFile?useraccount="+sp.getString(ConstValue.spAccount,"0")+"&modelname="+styleList.get(nowPosition).getModelname(),
-                                    Utility.saveBitmapToFile(((BitmapDrawable)Utility.ReSizePic(pic,ConstValue.pic_size_postCard_y,ConstValue.pic_size_postCard_x,getApplicationContext())).getBitmap(),"tmp","jpg")
-                                    );
+                            FileMessage fileMessage=Utility.uploadLogFile(
+                                    getApplicationContext(),
+                                    ConstValue.serverIp+"uploadFile?useraccount="+sp.getLong(ConstValue.spAccount,-1)+"&modelname="+styleList.get(nowPosition).getModelname(),
+                                    ConstValue.filePath+"tmp.jpg"
+                                     );
+                            if(file.exists())file.delete();
                             switch (fileMessage.getStatus()){
                                 case FileMessage.status_wait:
                                     handler.sendEmptyMessage(msg_wait);
@@ -243,7 +257,7 @@ public class ActivityMake extends Activity {
         styleList=new ArrayList<>();
         checkList=new ArrayList<>();
         dbHelper=new LocalDatabaseHelper(this,ConstValue.LocalDatabaseName,null,LocalDatabaseHelper.NEW_VERSION);
-        styleList=LocalDatabaseHelper.getStyles("",dbHelper.getReadableDatabase());
+        styleList=LocalDatabaseHelper.getStyles(makeType,dbHelper.getReadableDatabase());
         for(int i=0;i<styleList.size();i++){
             checkList.add(false);
         }
@@ -288,7 +302,7 @@ public class ActivityMake extends Activity {
                 break;
 
             case requestCode_cropPic:
-                if(resultCode==ActivityCrop.RESULT_CODE_OK){
+                if(resultCode==ActivityCrop.RESULT_OK){
                     String path=data.getStringExtra(ConstValue.key_imageUrl);
                     Log.e("GGG",path);
                     BitmapDrawable bd=(BitmapDrawable)Drawable.createFromPath(path);
@@ -299,10 +313,6 @@ public class ActivityMake extends Activity {
                     iv_pic.setVisibility(View.VISIBLE);
                     iv_pic.setImageDrawable(pic_show);
                     ll_bottom.setVisibility(View.VISIBLE);
-                    File file = new File(path);
-                    if(file.exists()){
-                        file.delete();
-                    }
                 }
                 break;
 

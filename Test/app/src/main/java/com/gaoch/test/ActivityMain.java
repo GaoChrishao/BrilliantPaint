@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.gaoch.test.adapter.LocalDatabaseHelper;
 import com.gaoch.test.util.Blur;
 import com.gaoch.test.util.ConstValue;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -72,12 +75,12 @@ public class ActivityMain extends Activity {
         }
 
         File bkgFile1=new File(ConstValue.getBkg_blurPath(getApplicationContext()));
+        DisplayMetrics metrics =new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
         if(bkgFile1.exists()&&bkgFile1.isFile()){
-            DisplayMetrics metrics =new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-            int width = metrics.widthPixels;
-            int height = metrics.heightPixels;
-            Blur.initBkg(Utility.LoadLocalBitmap(ConstValue.getBkg_blurPath(getApplicationContext())),width,height);
+            Blur.initBkgWithResieze(Utility.LoadLocalBitmap(ConstValue.getBkg_blurPath(getApplicationContext())),width,height);
         }
 
 
@@ -139,6 +142,11 @@ public class ActivityMain extends Activity {
                     transaction.commit();
                 }
                 else if (id == R.id.nav_exit){
+                    SharedPreferences.Editor editor = getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
+                    editor.putString(ConstValue.spUsername,"");
+                    editor.putString(ConstValue.spPassword,"");
+                    editor.putLong(ConstValue.spAccount,-1);
+                    editor.apply();
                     Intent intent = new Intent(ActivityMain.this,ActivityLogin.class);
                     startActivity(intent);
                     finish();
@@ -179,37 +187,50 @@ public class ActivityMain extends Activity {
      */
     public void changeVarHead() {
         SharedPreferences preferences = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
-        String account= preferences.getString(ConstValue.spAccount,"账号");
+        Long account= preferences.getLong(ConstValue.spAccount,-1);
         String name= preferences.getString(ConstValue.spUsername,"用户名");
+        String userpicname=preferences.getString(ConstValue.spUserPic,"");
         Log.e("GGG","account:"+account+" username:"+name);
         View headerView = navigationView.getHeaderView(0);
         TextView textview = (TextView) headerView.findViewById(R.id.nav_username);
         textview.setText(name);
         TextView textView1 = headerView.findViewById(R.id.nav_account);
-        textView1.setText(account);
-//        CircleImageView userPic=headerView.findViewById(R.id.nav_userpic);
-//        RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop();
-//        Glide.with(this).load(ConstValue.serverUserPic+ getUserID()+".png")
-//                .apply(options)
-//                .listener(new RequestListener<Drawable>() {
-//                    @Override
-//                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                        Log.d("MainActivity","加载用户头像失败");
-//                        LogToFile.e("MainActivity","加载用户头像失败");
-//                        return false;
-//                    }
-//                    @Override
-//                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                        return false;
-//                    }
-//                }).into(userPic);
-//
+        textView1.setText(account+"");
+        CircleImageView userPic=headerView.findViewById(R.id.nav_userpic);
+
+        if(!userpicname.equals("")){
+            RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop().dontAnimate();
+            Glide.with(this).load(ConstValue.url_picUser(userpicname))
+                    .apply(options)
+                    .into(userPic);
+        }
+
+
 //        Log.e("MainActivity",primaryColor+"");
 //        if(primaryColor!=0){
 //            LinearLayout layout = headerView.findViewById(R.id.nav_header);
 //            layout.setBackgroundColor(primaryColor);
 //        }
 //        Log.e("cloudbook","颜色:"+primaryColor);
+    }
+
+    /**
+     * 修改var_head的内容
+     */
+    public void updateUserPic() {
+        Log.e("GGG","更新navView");
+        SharedPreferences preferences = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
+        View headerView = navigationView.getHeaderView(0);
+        final CircleImageView userPic=headerView.findViewById(R.id.nav_userpic);
+        String userpicname=preferences.getString(ConstValue.spUserPic,"");
+        if(!userpicname.equals("")){
+            RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop().dontAnimate();
+            Glide.with(this).load(ConstValue.url_picUser(userpicname))
+                    .apply(options)
+                   .into(userPic);
+        }
+
+
     }
 
 
@@ -241,7 +262,7 @@ public class ActivityMain extends Activity {
      * 获取自己已经做过的全部图片信息
      */
     public void tryGetUserfile(){
-        String address=ConstValue.url_userfiles(getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spAccount,""));
+        String address=ConstValue.url_userfiles(String.valueOf(getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getLong(ConstValue.spAccount,-1)));
         Log.e("GGG",address);
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override

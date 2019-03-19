@@ -8,12 +8,16 @@ public class User {
     private Long account;
     private String username;
     private String password;
+    private String userpic;
+    private int exp;
 
     public User() {
         id= Long.valueOf(0);
         account= Long.valueOf(0);
         username="";
         password="";
+        userpic="";
+
     }
 
     public Long getId() {
@@ -46,5 +50,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getExp() {
+        return exp;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
+    public String getUserpic() {
+        return userpic;
+    }
+
+    public void setUserpic(String userpic) {
+        this.userpic = userpic;
     }
 }

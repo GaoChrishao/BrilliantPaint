@@ -5,6 +5,7 @@ import MyServer.bean.FileMessage;
 import MyServer.bean.Pic;
 import MyServer.bean.Style;
 import MyServer.bean.User;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -49,7 +51,7 @@ public class FileServer {
             String s[]=modelname.split("\\.");
             String fileType=s[s.length-1];
 //            String preFileName=useraccount+ct+"."+fileType;
-            String preFileName=useraccount+ct+".png";
+            String preFileName=useraccount+ct+".jpg";
             System.out.println("开始接受图片:"+preFileName);
             saveFile(dis,preFileName);
 
@@ -65,12 +67,21 @@ public class FileServer {
 
             if(processPic(preFileName,useraccount+ct,modelname)){
                 //处理成功
-                insertDB(useraccount,useraccount+ct,modelname,get(Long.valueOf(useraccount)).getUsername());
+                addExp(Long.valueOf(useraccount),ConstValue.exp_processpic);
+
+                Style style=search(modelname).get(0);
+                if(style!=null&&style.getName().length()>1){
+                    insertDB(useraccount,useraccount+ct,style.getName(),get(Long.valueOf(useraccount)).getUsername());
+                }else{
+                    insertDB(useraccount,useraccount+ct,modelname,get(Long.valueOf(useraccount)).getUsername());
+                }
+
+
                 FileMessage fileMessage = new FileMessage();
                 MyServer.bean.File file = new MyServer.bean.File();
                 file.setAccount(Long.valueOf(useraccount));
                 file.setUsername(useraccount);
-                file.setUrlpath(ConstValue.img_url_after+useraccount+ct+".png");
+                file.setUrlpath(ConstValue.img_url_after+useraccount+ct+".jpg");
                 fileMessage.addFile(file);
                 ConstValue.isProcessing=false;
                 return fileMessage;
@@ -86,6 +97,7 @@ public class FileServer {
 
         }
     }
+
     /**
      * 保存接收到的文件到本地
      * @param dis,fileName
@@ -133,7 +145,7 @@ public class FileServer {
             modelname="la_muse";
         }
         try {
-            String[] args1=new String[]{ConstValue.python, "transform.py", "-i",ConstValue.img_dir_pre+inFileName,"-s",modelname, "-b","0.1","-o", ConstValue.img_dir_after+outFileName};
+            String[] args1=new String[]{ConstValue.python, "transform.py", "-i",ConstValue.img_dir_pre+inFileName,"-s",modelname, "-b","0.1","-o", ConstValue.img_dir_after+"tmp"};
             Process pr=Runtime.getRuntime().exec(args1,null,new File(ConstValue.transformPath));
             BufferedReader in = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
             String line;
@@ -142,6 +154,10 @@ public class FileServer {
             }
             in.close();
             pr.waitFor();
+            Thumbnails.of(ConstValue.img_dir_after+"tmp.jpg")
+                    .scale(1f)
+                    .outputQuality(0.5f)
+                    .toFile(ConstValue.img_dir_after+outFileName+".jpg");
             return true;
         }
         catch (Exception e) {
@@ -151,7 +167,7 @@ public class FileServer {
     }
 
     private int insertDB(String account,String filename,String stylename,String username){
-        return jdbcTemplate.update("insert into userfile(account,picname,stylename,username,time) values(?,?,?,?,?)", account,filename+".png",stylename,username,System.currentTimeMillis());
+        return jdbcTemplate.update("insert into userfile(account,picname,stylename,username,time) values(?,?,?,?,?)", account,filename+".jpg",stylename,username,System.currentTimeMillis());
     }
 
 
@@ -167,5 +183,45 @@ public class FileServer {
             return null;
         }
         return result.get(0);
+    }
+    /**
+     * 用户经验增加
+     * @param account
+     * @return
+     */
+    public User addExp(Long account,int exp) {
+        if(get(account)!=null){
+            jdbcTemplate.update("update userinfo set exp=exp+?  where account = ?", exp,account);
+            return get(account);
+        }
+        return new User();
+    }
+
+
+    /**
+     * 查询用户信息
+     * @param account
+     * @param password
+     * @return
+     */
+    public User get(Long account, String password) {
+        List<User> result = jdbcTemplate.query("select * from userinfo where account = ? and password = ?", new Object[] {
+                account,password }, new BeanPropertyRowMapper(User.class));
+        if (result == null || result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
+    }
+
+
+    public List<Style> search(String modelname){
+        List<Style> styleList = jdbcTemplate.query("select * from styles where modelname = ?", new Object[] {
+                modelname }, new BeanPropertyRowMapper(Style.class));
+        for(int i=0;i<styleList.size();i++){
+            Style style=styleList.get(i);
+            style.setPicurl(ConstValue.img_model_url+style.getPicurl());
+            styleList.set(i,style);
+        }
+        return styleList;
     }
 }

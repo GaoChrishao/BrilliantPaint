@@ -1,10 +1,10 @@
 package MyServer.Controller;
 
 
+import MyServer.bean.FileMessage;
 import MyServer.bean.User;
 import MyServer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,10 +33,10 @@ public class UserController {
 
     @RequestMapping(value = "/login")
     public User login(
-            @RequestParam(value="account",required=true) String account,
+            @RequestParam(value="account",required=true) Long account,
             @RequestParam(value="password",required=true) String password) throws Exception {
         System.out.println("登入操作,account:"+account+" password:"+password);
-        return userService.signin(Long.valueOf(account),password);
+        return userService.login(account,password);
     }
 
     @RequestMapping(value = "/update")
@@ -47,4 +47,10 @@ public class UserController {
         System.out.println("更新操作,account:"+account+" password:"+password+" username:"+username);
         return userService.update(Long.valueOf(account),password,username);
     }
+
+
+
+
+
+
 }

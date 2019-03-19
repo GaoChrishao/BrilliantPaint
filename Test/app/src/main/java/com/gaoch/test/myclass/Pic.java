@@ -2,6 +2,9 @@ package com.gaoch.test.myclass;
 
 import java.io.Serializable;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class Pic implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer id;
@@ -10,6 +13,7 @@ public class Pic implements Serializable {
     private String stylename;
     private String picname;
     private Long time;
+    private String userpic;
 
 
     public Pic() {
@@ -61,5 +65,13 @@ public class Pic implements Serializable {
 
     public void setTime(Long time) {
         this.time = time;
+    }
+
+    public String getUserpic() {
+        return userpic;
+    }
+
+    public void setUserpic(String userpic) {
+        this.userpic = userpic;
     }
 }

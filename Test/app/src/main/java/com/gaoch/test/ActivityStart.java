@@ -9,10 +9,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +20,11 @@ import com.redbooth.WelcomeCoordinatorLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import static com.gaoch.test.util.ConstValue.LOCATIONGPS;
 
@@ -69,12 +70,12 @@ public class ActivityStart extends Activity {
 
         SharedPreferences preferences = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
         boolean hasOpen=preferences.getBoolean(ConstValue.hasOpen,false);
-        String account=preferences.getString(ConstValue.spAccount,"");
-        if(hasOpen&&account.length()>0){
+        String account=String.valueOf(preferences.getLong(ConstValue.spAccount,-1));
+        if(hasOpen&&account.length()>1){
             Intent intent = new Intent(getApplicationContext(),ActivityMain.class);
             startActivity(intent);
             finish();
-        }else if(hasOpen&account.length()<=0){
+        }else if(hasOpen&account.length()<=1){
             Intent intent = new Intent(getApplicationContext(),ActivityLogin.class);
             startActivity(intent);
             finish();

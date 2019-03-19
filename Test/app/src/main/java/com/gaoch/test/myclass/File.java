@@ -2,6 +2,9 @@ package com.gaoch.test.myclass;
 
 import java.io.Serializable;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class File implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;

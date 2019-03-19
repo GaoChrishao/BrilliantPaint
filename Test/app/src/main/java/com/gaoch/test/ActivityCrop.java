@@ -18,7 +18,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class ActivityCrop extends Activity {
-    public static final int RESULT_CODE_OK=2;
     private FloatingActionButton btn;
     private CropImageView cropImageView;
     private volatile String fileName;
@@ -35,6 +34,9 @@ public class ActivityCrop extends Activity {
         if(imgPath!=null){
             Log.e("GGG",imgPath);
            cropImageView.setImageBitmap(Utility.LoadLocalBitmap(imgPath));
+           //cropImageView.setImageUriAsync(Uri.parse(imgPath));
+           //cropImageView.setImage
+            //new TaskLoadImg().execute(imgPath);
 
         }
         int x=getIntent().getIntExtra(ConstValue.key_imageCropX,0);
@@ -65,6 +67,7 @@ public class ActivityCrop extends Activity {
                         new TaskBkg().execute(croppedImage);
                         break;
                     case ConstValue.CROP_USER:
+                        new TaskUser().execute(croppedImage);
                         break;
                         default:
                             new ActivityCrop.MyTask().execute(croppedImage);
@@ -78,14 +81,21 @@ public class ActivityCrop extends Activity {
     }
 
 
-    //保存图片到文件
+    //保存剪裁的图片到文件
     class MyTask extends AsyncTask<Bitmap,Void, String> {
         @Override
         protected String doInBackground(Bitmap... bitmaps) {
-            if(fileName==null){
-                fileName=System.currentTimeMillis()+"";
+            int prePicWidth=bitmaps[0].getWidth();
+            int prePicHeight=bitmaps[0].getHeight();
+            if(prePicHeight>ConstValue.pic_crop_maxHeight){
+                double scaleFactor=(ConstValue.pic_crop_maxHeight+0.0)/prePicHeight;
+                Bitmap bkg_scaled= Bitmap.createScaledBitmap(bitmaps[0],(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
+                return Utility.saveBitmapToFile(bkg_scaled,ConstValue.pic_quality,"tmp","jpg");
+            }else{
+                return Utility.saveBitmapToFile(bitmaps[0],ConstValue.pic_quality,"tmp","jpg");
             }
-            return Utility.saveBitmapToFile(bitmaps[0],fileName,"jpg");
+
+
         }
 
         @Override
@@ -96,16 +106,16 @@ public class ActivityCrop extends Activity {
                 Log.e("GGG","图片剪裁成功:"+path);
                 Intent intent = new Intent();
                 intent.putExtra(ConstValue.key_imageUrl,path);
-                setResult(RESULT_CODE_OK, intent);
+                setResult(RESULT_OK, intent);
                 finish();
             }else{
-                //Toast.makeText(ActivityCrop.this, "保存失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityCrop.this, "保存失败", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
 
-    //保存图片到文件
+    //保存背景图片到文件
     class TaskBkg extends AsyncTask<Bitmap,Void, String> {
         @Override
         protected String doInBackground(Bitmap... bitmaps) {
@@ -134,6 +144,59 @@ public class ActivityCrop extends Activity {
             }else{
                 Toast.makeText(ActivityCrop.this, "保存失败", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+
+    //保存剪裁的用户头像到文件
+    class TaskUser extends AsyncTask<Bitmap,Void, String> {
+        @Override
+        protected String doInBackground(Bitmap... bitmaps) {
+            int prePicWidth=bitmaps[0].getWidth();
+            int prePicHeight=bitmaps[0].getHeight();
+            if(prePicHeight>ConstValue.pic_crop_maxHeight){
+                double scaleFactor=(ConstValue.pic_User_maxHeight+0.0)/prePicHeight;
+                Bitmap bkg_scaled= Bitmap.createScaledBitmap(bitmaps[0],(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
+                return Utility.saveBitmapToFile(bkg_scaled,ConstValue.pic_quality,"tmp","jpg");
+            }else{
+                return Utility.saveBitmapToFile(bitmaps[0],ConstValue.pic_quality,"tmp","jpg");
+            }
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String path) {
+            super.onPostExecute(path);
+            if(path!=null){
+                //Toast.makeText(ActivityCrop.this, "保存成功", Toast.LENGTH_SHORT).show();
+                Log.e("GGG","图片剪裁成功:"+path);
+                Intent intent = new Intent();
+                intent.putExtra(ConstValue.key_imageUrl,path);
+                setResult(RESULT_OK, intent);
+                finish();
+            }else{
+                Toast.makeText(ActivityCrop.this, "保存失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+
+
+
+
+    class TaskLoadImg extends AsyncTask<String,Void,Bitmap>{
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            return Utility.LoadLocalBitmap(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            cropImageView.setImageBitmap(bitmap);
         }
     }
 }

@@ -104,7 +104,9 @@ public class ActivitySignin extends Activity implements View.OnClickListener {
                     SharedPreferences.Editor editor1 = getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
                     editor1.putString(ConstValue.spUsername,user1.getUsername());
                     editor1.putString(ConstValue.spPassword,user1.getPassword());
-                    editor1.putString(ConstValue.spAccount,user1.getAccount()+"");
+                    editor1.putLong(ConstValue.spAccount,user1.getAccount());
+                    editor1.putInt(ConstValue.spExp,user1.getExp());
+                    editor1.putString(ConstValue.spUserPic,user1.getUserpic());
                     editor1.apply();
                     closeProgressDialog();
                     startActivity(new Intent(ActivitySignin.this,ActivityMain.class));

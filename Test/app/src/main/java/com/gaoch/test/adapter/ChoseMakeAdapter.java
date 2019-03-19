@@ -1,9 +1,6 @@
 package com.gaoch.test.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +14,11 @@ import com.gaoch.test.R;
 import com.gaoch.test.myclass.Style;
 import com.gaoch.test.myview.RoundAngleImageView;
 
-
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ChoseMakeAdapter extends RecyclerView.Adapter<ChoseMakeAdapter.ViewHolder> {
     private mOnItemClickListener onItemClickListener;
@@ -63,18 +62,18 @@ public class ChoseMakeAdapter extends RecyclerView.Adapter<ChoseMakeAdapter.View
         }
         RequestOptions options = new RequestOptions().centerCrop();
         Glide.with(mcontext).load(styleList.get(i).getPicurl()).apply(options).into(viewHolder.imageView);
-        Log.e("GGG",styleList.get(i).getPicurl());
+        //Log.e("GGG",styleList.get(i).getPicurl());
         if(checkList.get(i)){
             viewHolder.relativeLayout.setBackground(mcontext.getDrawable(R.drawable.background_yuanjiao_white));
             //放大动画
             Animation animation = AnimationUtils.loadAnimation(mcontext,R.anim.view_scale_larger);
             viewHolder.itemView.startAnimation(animation);
         }else{
-            Log.e("GGG","取消颜色:"+i);
+            //Log.e("GGG","取消颜色:"+i);
             viewHolder.relativeLayout.setBackgroundColor(mcontext.getResources().getColor(R.color.colorUnChoseLines));
         }
         viewHolder.itemView.setTag(i);
-        Log.e("GGG","onBindViewHolder:"+i);
+        //Log.e("GGG","onBindViewHolder:"+i);
     }
 
     @Override

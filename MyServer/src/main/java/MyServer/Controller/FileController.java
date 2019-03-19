@@ -5,6 +5,7 @@ import MyServer.bean.FileMessage;
 import MyServer.bean.Pic;
 import MyServer.bean.User;
 import MyServer.service.FileServer;
+import MyServer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,15 +27,17 @@ public class FileController {
      */
     @Autowired
     private FileServer fileServer;
+
+
     @RequestMapping(value = "/uploadFile")
     public FileMessage uploadFile(HttpServletRequest request, HttpServletResponse response)
     {
         System.out.println("start------------");
         FileMessage fileMessage= fileServer.process(request);
-
         System.out.println("end--------------");
         return fileMessage;
     }
+
 
 
 

@@ -309,10 +309,10 @@ public class Blur {
         Bitmap bkg_origin= Bitmap.createScaledBitmap(bkg1,(int)(width/scaleFactor),(int)(height/scaleFactor), true);
         bkg_origin.setConfig(Bitmap.Config.ARGB_8888);
         bkg=Bitmap.createScaledBitmap(doBlur(bkg_origin,radius,true),width,height,true);
-        Log.e("Blur","高斯模糊背景图片");
+        Log.e("Blur","高斯模糊背景图片:"+bkg.getWidth()+","+bkg.getHeight());
     }
 
-    public static void initBkg(Bitmap bitmap,int width,int height){
+    public static void initBkgWithResieze(Bitmap bitmap, int width, int height){
         if(bitmap!=null){
             //bitmap.setConfig(Bitmap.Config.ARGB_8888);
             bkg=Bitmap.createScaledBitmap(bitmap,width,height,true);

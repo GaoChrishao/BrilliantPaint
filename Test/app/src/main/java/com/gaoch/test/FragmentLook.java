@@ -1,19 +1,10 @@
 package com.gaoch.test;
 
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.util.Pair;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +24,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -51,7 +50,7 @@ public class FragmentLook extends Fragment {
     // 若是上拉加载更多的网络请求 则不需要删除数据
     private boolean isLoadingMore = false;
     // 最后一个条目位置
-    private  int lastVisibleItem = 0;
+    private  int lastVisibleItem = -1;
     private  boolean loading=false;
 
 
@@ -105,7 +104,7 @@ public class FragmentLook extends Fragment {
                 if(hasMore&&lastVisibleItem+1==picList.size()&&picList.get(lastVisibleItem).getId()>0){
                     tryGetUserfile(picList.get(lastVisibleItem).getId());
                 }
-                //Log.e("GGG","now:"+lastVisibleItem+"  max:"+picList.size());
+                Log.e("GGG","now:"+lastVisibleItem+"  max:"+picList.size());
             }
 
             @Override
@@ -140,7 +139,7 @@ public class FragmentLook extends Fragment {
         Log.e("GGG","---------------------"+id);
         swipeRefreshLayout.setRefreshing(true);
         String address=ConstValue.url_newestUserfiles(id);
-        //Log.e("GGG",address);
+        Log.e("GGG",address);
         HttpUtil.sendOkHttpRequest(address, new Callback() {
 
             @Override
@@ -154,19 +153,21 @@ public class FragmentLook extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
                 JSONArray jsonArray = null;
+                Log.e("GGG",responseText);
                 try {
                     jsonArray = new JSONArray(responseText);
                     for(int i=0;i<jsonArray.length();i++){
-                        ContentValues value = new ContentValues();
                         JSONObject jsonObject = (JSONObject) jsonArray.getJSONObject(i);
                         int id=jsonObject.getInt("id");
                         if(id==0){
                             hasMore=false;
+                            handler.sendEmptyMessage(msg_nomore);
                         }else{
                             long account=jsonObject.getLong("account");
                             String username=jsonObject.getString("username");
                             String stylename=jsonObject.getString("stylename");
                             String picname=jsonObject.getString("picname");
+                            String userpic=jsonObject.getString("userpic");
                             long time=jsonObject.getLong("time");
                             Pic pic=new Pic();
                             pic.setId(id);
@@ -175,6 +176,7 @@ public class FragmentLook extends Fragment {
                             pic.setPicname(picname);
                             pic.setAccount(account);
                             pic.setTime(time);
+                            pic.setUserpic(userpic);
                             picList.add(pic);
                         }
                     }
@@ -198,7 +200,7 @@ public class FragmentLook extends Fragment {
                     Toast.makeText(getContext(), "请检查网络连接！", Toast.LENGTH_SHORT).show();
                     break;
                 case msg_update:
-                    adapter.notifyItemRangeChanged(lastVisibleItem+1,picList.size()-1);
+                    adapter.notifyItemRangeChanged(lastVisibleItem+1,picList.size());
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getContext(), "获取数据成功！", Toast.LENGTH_SHORT).show();
                     break;

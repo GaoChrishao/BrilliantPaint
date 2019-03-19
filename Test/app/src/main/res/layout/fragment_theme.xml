@@ -85,7 +85,6 @@
                     android:id="@+id/theme_chooseUserpic"
                     android:textColor="@color/colorTitle"
                     android:background="@drawable/background_yuanjiao_btn"
-                    android:layout_marginRight="35dp"
                     android:text="选择"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

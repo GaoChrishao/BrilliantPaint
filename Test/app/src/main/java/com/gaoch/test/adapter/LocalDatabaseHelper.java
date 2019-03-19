@@ -112,8 +112,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
 
     public static List<Style>getStyles(String needtype,SQLiteDatabase db){
         List<Style>styleList=new ArrayList<>();
-
-        Cursor cursor = db.rawQuery("select * from styles ", null);
+        Cursor cursor = db.rawQuery("select * from styles where type=?", new String[]{needtype});
         if(cursor.moveToFirst()){
             do{
                 int id=cursor.getInt(cursor.getColumnIndex("id"));

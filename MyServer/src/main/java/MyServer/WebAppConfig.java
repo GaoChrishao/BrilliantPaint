@@ -35,4 +35,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/images/**").addResourceLocations(mImagesPath);
         super.addResourceHandlers(registry);
     }
+
+
 }

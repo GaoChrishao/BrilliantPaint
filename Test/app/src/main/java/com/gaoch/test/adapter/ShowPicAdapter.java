@@ -1,9 +1,7 @@
 package com.gaoch.test.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +23,9 @@ import com.gaoch.test.util.Utility;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ShowPicAdapter extends RecyclerView.Adapter<ShowPicAdapter.ViewHolder> {
@@ -63,14 +64,30 @@ public class ShowPicAdapter extends RecyclerView.Adapter<ShowPicAdapter.ViewHold
                 }
             });
         }
-        RequestOptions options1 = new RequestOptions().centerCrop().dontAnimate();
-        //Glide.with(mcontext).load(userPicList.get(i)).apply(options1).into(viewHolder.user_pic);
+        //防止Glide加载图片混乱
+        Object tag = viewHolder.user_name.getTag();
+        if(tag!=null&&(int)tag!=i){
+            Glide.with(mcontext).clear(viewHolder.user_pic);
+            Glide.with(mcontext).clear(viewHolder.iv_pic);
+        }
+
+
+        RequestOptions options1 = new RequestOptions().centerCrop().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).dontAnimate();
+        String userpic=picList.get(i).getUserpic();
+        Log.e("GGG","!!!!!!!!!!!!!!!"+userpic);
+        if(!userpic.equals("null")){
+            Glide.with(mcontext).load(ConstValue.url_picUser(userpic)).apply(options1).into(viewHolder.user_pic);
+
+        }
+
         Glide.with(mcontext).load(ConstValue.url_picAfter(picList.get(i).getPicname())).apply(options).into(viewHolder.iv_pic);
         viewHolder.des.setText(picList.get(i).getStylename());
         viewHolder.user_name.setText(picList.get(i).getUsername());
         viewHolder.itemView.setTag(i);
         Animation animation = AnimationUtils.loadAnimation(mcontext,R.anim.view_scale);
         viewHolder.itemView.startAnimation(animation);
+        viewHolder.user_name.setTag(i);
+
 
     }
 

@@ -97,7 +97,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/background_yuanjiao_btn"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:text="取消"
                 android:textColor="#fff"
                 android:textSize="25sp"

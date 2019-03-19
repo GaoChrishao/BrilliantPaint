@@ -1,5 +1,8 @@
 package com.gaoch.test.myclass;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class Style {
     private Integer id;
     private String type;  //类别

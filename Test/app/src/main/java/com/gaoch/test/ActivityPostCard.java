@@ -10,9 +10,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
-import androidx.annotation.Nullable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +26,8 @@ import com.gaoch.test.util.Utility;
 import com.yinglan.shadowimageview.ShadowImageView;
 
 import java.io.File;
+
+import androidx.annotation.Nullable;
 
 public class ActivityPostCard extends Activity {
     private Drawable pic_show;
@@ -104,7 +105,7 @@ public class ActivityPostCard extends Activity {
                 }
                 break;
             case requestCode_cropPic:
-                if(resultCode==ActivityCrop.RESULT_CODE_OK){
+                if(resultCode==ActivityCrop.RESULT_OK){
                     String path=data.getStringExtra(ConstValue.key_imageUrl);
                     Log.e("GGG",path);
                     BitmapDrawable bd=(BitmapDrawable)Drawable.createFromPath(path);

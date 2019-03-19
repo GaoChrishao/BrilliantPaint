@@ -3,12 +3,15 @@ package com.gaoch.test;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,17 +21,27 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.gaoch.test.myclass.User;
 import com.gaoch.test.myview.CircleExp;
 import com.gaoch.test.util.Blur;
 import com.gaoch.test.util.ConstValue;
+import com.gaoch.test.util.HttpUtil;
+import com.google.gson.Gson;
 import com.stx.xhb.xbanner.XBanner;
 
+import java.io.IOException;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -38,13 +51,17 @@ public class FragmentHome extends Fragment {
     private XBanner mXBanner;
     private List<String>imageUrls;
     private List<String>titles;
-    private Button btn_1,btn_2;
+    private Button btn_strange, btn_oil,btn_ink,btn_building,btn_cartoon,btn_water,btn_face,btn_scene;
     private TextView tv_5;
     private View.OnTouchListener onTouchListener;
     private CircleImageView circleImageView;
     private CircleExp exp;
     private TextView tv_name,tv_exp;
     private int hasBlured_top1=0,hasBlured_top2=0,hasBlured_top3=0,hasBlured_top4=0;
+    private final int msg_login=1;
+    private final int msg_signup=2;
+    private final int msg_close=3;
+    private final int msg_noAccount=4;
 
 
     @Nullable
@@ -54,12 +71,20 @@ public class FragmentHome extends Fragment {
         layout_1=view.findViewById(R.id.main_layout1);
         layout_2=view.findViewById(R.id.main_layout2);
         layout_3=view.findViewById(R.id.main_layout3);
-        btn_1=view.findViewById(R.id.fragment_main_btn_1);
-        btn_2=view.findViewById(R.id.fragment_main_btn_2);
         circleImageView=view.findViewById(R.id.fragment_main_user_pic);
         exp=view.findViewById(R.id.fragment_main_exp);
         tv_name=view.findViewById(R.id.fragment_main_tv_name);
         tv_exp=view.findViewById(R.id.fragment_main_tv_exp);
+
+        btn_strange =view.findViewById(R.id.fragment_main_btn_strange);
+        btn_oil =view.findViewById(R.id.fragment_main_btn_oil);
+        btn_building=view.findViewById(R.id.fragment_main_btn_building);
+        btn_cartoon=view.findViewById(R.id.fragment_main_btn_catroon);
+        btn_water =view.findViewById(R.id.fragment_main_btn_water);
+        btn_ink =view.findViewById(R.id.fragment_main_btn_ink);
+        btn_face=view.findViewById(R.id.fragment_main_btn_face);
+        btn_scene=view.findViewById(R.id.fragment_main_btn_scene);
+
         return view;
     }
 
@@ -68,7 +93,7 @@ public class FragmentHome extends Fragment {
         super.onActivityCreated(savedInstanceState);
         exp.setAngle(180);
         tv_name.setText(getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUsername,"妙笔生画"));
-        int exp= getActivity().getSharedPreferences(ConstValue.spAccount,MODE_PRIVATE).getInt(ConstValue.spExp,999999);
+        int exp= getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getInt(ConstValue.spExp,0);
         int exp_1=exp;
         int level=0;
         while (exp_1>0){
@@ -76,6 +101,13 @@ public class FragmentHome extends Fragment {
             level++;
         }
         tv_exp.setText("Lv."+level);
+        String userpicname=getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUserPic,"");
+        RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop().dontAnimate();
+        if(!userpicname.equals("")){
+            Glide.with(getContext()).load(ConstValue.url_picUser(userpicname))
+                    .apply(options)
+                    .into(circleImageView);
+        }
         setBlur();
 
 
@@ -106,11 +138,60 @@ public class FragmentHome extends Fragment {
 //        });
 //
 //
-        btn_1.setOnClickListener(new View.OnClickListener() {
+        btn_strange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(getContext(),ActivityMake.class);
+                intent.putExtra(ConstValue.key_makeType,ConstValue.type_make_strange);
+                startActivity(intent);
+            }
+        });
+
+        btn_scene.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "此分区暂时未完成", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "此分区暂时未完成", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_cartoon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "此分区暂时未完成", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_building.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "此分区暂时未完成", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_water.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),ActivityMake.class);
+                intent.putExtra(ConstValue.key_makeType,ConstValue.type_make_water);
+                startActivity(intent);
+            }
+        });
+        btn_oil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),ActivityMake.class);
+                intent.putExtra(ConstValue.key_makeType,ConstValue.type_make_oil);
+                startActivity(intent);
+            }
+        });
+        btn_ink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),ActivityMake.class);
+                intent.putExtra(ConstValue.key_makeType,ConstValue.type_make_ink);
                 startActivity(intent);
             }
         });
@@ -167,7 +248,7 @@ public class FragmentHome extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //mXBanner.startAutoPlay();
+        tryLogin();
     }
 
     @Override
@@ -191,7 +272,6 @@ public class FragmentHome extends Fragment {
                     //FrameLayout layout = findViewById(R.id.main_fragment);
                     //layout.setBackground(Drawable.createFromPath(path));
                     cursor.close();
-
                 }
                 break;
         }
@@ -233,6 +313,102 @@ public class FragmentHome extends Fragment {
         }
     }
 
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case ConstValue.noInternet:
+                    Toast.makeText(getContext(),"网络连接失败！",Toast.LENGTH_SHORT).show();
+                    break;
+                case msg_login:
+                    Bundle bundle = msg.getData();
+                    User user= (User) bundle.getSerializable(ConstValue.bundle_user);
+                    if(user.getId()==0){
+                        Toast.makeText(getContext(), "登入失败,账号或密码出错!", Toast.LENGTH_SHORT).show();
+                        getActivity().startActivity(new Intent(getActivity(),ActivityLogin.class));
+                        getActivity().finish();
+                        return;
+                    }
+                    //Toast.makeText(getContext(), "欢迎回来："+user.getUsername(), Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = getContext().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
+                    editor.putString(ConstValue.spUsername,user.getUsername());
+                    editor.putString(ConstValue.spPassword,user.getPassword());
+                    editor.putLong(ConstValue.spAccount,user.getAccount());
+                    editor.putInt(ConstValue.spExp,user.getExp());
+                    editor.putString(ConstValue.spUserPic,user.getUserpic());
+                    editor.apply();
+                    tv_name.setText(user.getUsername());
+                    int exp= user.getExp();
+                    int level=0;
+                    while (exp>0){
+                        exp=exp/10;
+                        level++;
+                    }
+                    tv_exp.setText("Lv."+level);
+//                    ((ActivityMain)getActivity()).changeVarHead();
+//                    RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop();
+//                    String userpicname=getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUsername,"");
+//                    if(!userpicname.equals("")){
+//                        Glide.with(getContext()).load(ConstValue.url_picUser(userpicname))
+//                                .apply(options)
+//                                .listener(new RequestListener<Drawable>() {
+//                                    @Override
+//                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+//
+//                                        return false;
+//                                    }
+//                                    @Override
+//                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+//                                        return false;
+//                                    }
+//                                }).into(circleImageView);
+//                    }
+
+                    break;
+                case msg_close:
+                    Toast.makeText(getContext(), "服务器暂时关闭", Toast.LENGTH_SHORT).show();
+                    break;
+
+            }
+        }
+    };
+
+    public void tryLogin(){
+        long account=getContext().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getLong(ConstValue.spAccount,-1);
+        String pwd=getContext().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spPassword,"0");
+        String address=ConstValue.url_login(String.valueOf(account),pwd);
+        Log.e("GGG",address);
+        HttpUtil.sendOkHttpRequest(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Message msg = new Message();
+                msg.what=ConstValue.noInternet;
+                handler.sendMessage(msg);
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                System.out.println(responseText);
+                User user=null;
+                try{
+                    user = new Gson().fromJson(responseText,User.class);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    handler.sendEmptyMessage(msg_close);
+                }
+                if(user!=null){
+                    Message msg = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(ConstValue.bundle_user,user);
+                    msg.setData(bundle);
+                    msg.what=msg_login;
+                    handler.sendMessage(msg);
+                }
+
+            }
+        });
+    }
+
 
     public void setBlur(){
         final LinearLayout bkg_layout=((ActivityMain)getActivity()).layout_bkg;
@@ -244,7 +420,6 @@ public class FragmentHome extends Fragment {
                 if(hasBlured_top1!=position[1]){
                     Blur.blur(bkg_layout,layout_1,ConstValue.radius,ConstValue.scaleFactor,ConstValue.RoundCorner);
                     hasBlured_top1=position[1];
-                    Log.e("GGG",position[0]+" "+position[1]);
                 }
 
                 return true;
@@ -258,7 +433,6 @@ public class FragmentHome extends Fragment {
                 if(hasBlured_top2!=position[1]){
                     Blur.blur(bkg_layout,layout_2,ConstValue.radius,ConstValue.scaleFactor,ConstValue.RoundCorner);
                     hasBlured_top2=position[1];
-                    Log.e("GGG","--------");
                 }
 
 

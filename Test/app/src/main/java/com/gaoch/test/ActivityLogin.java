@@ -62,10 +62,13 @@ public class ActivityLogin extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         SharedPreferences preferences = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
-        String account= preferences.getString(ConstValue.spAccount,"");
+        String account= String.valueOf(preferences.getLong(ConstValue.spAccount,-1));
         String pwd=preferences.getString(ConstValue.spPassword,"");
-        edit_account.setText(account);
-        edit_password.setText(pwd);
+        if(!account.equals("-1")){
+            edit_account.setText(account);
+            edit_password.setText(pwd);
+        }
+
     }
 
 
@@ -114,7 +117,9 @@ public class ActivityLogin extends Activity implements View.OnClickListener {
                     SharedPreferences.Editor editor = getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
                     editor.putString(ConstValue.spUsername,user.getUsername());
                     editor.putString(ConstValue.spPassword,user.getPassword());
-                    editor.putString(ConstValue.spAccount,user.getAccount()+"");
+                    editor.putLong(ConstValue.spAccount,user.getAccount());
+                    editor.putInt(ConstValue.spExp,user.getExp());
+                    editor.putString(ConstValue.spUserPic,user.getUserpic());
                     editor.apply();
                     startActivity(new Intent(ActivityLogin.this,ActivityMain.class));
                     closeProgressDialog();

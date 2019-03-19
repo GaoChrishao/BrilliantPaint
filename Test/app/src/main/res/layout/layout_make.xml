@@ -116,9 +116,10 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_1"
+                        android:id="@+id/fragment_main_btn_strange"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         android:background="@drawable/ic_strange1" />
                 </LinearLayout>
 
@@ -130,10 +131,11 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_2"
+                        android:id="@+id/fragment_main_btn_oil"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:background="@drawable/ic_color"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -145,10 +147,11 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_3"
+                        android:id="@+id/fragment_main_btn_water"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:background="@drawable/ic_water1"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         android:textSize="25sp" />
                 </LinearLayout>
 
@@ -168,10 +171,12 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_7"
+                        android:id="@+id/fragment_main_btn_ink"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_maobi" />
+                        android:background="@drawable/ic_maobi"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -182,11 +187,13 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_8"
+                        android:id="@+id/fragment_main_btn_catroon"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:background="@drawable/ic_cartoon"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -201,7 +208,9 @@
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:background="@drawable/ic_oil"
-                        android:textSize="25sp" />
+                        android:textSize="25sp"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        />
                 </LinearLayout>
 
             </LinearLayout>
@@ -245,10 +254,12 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_4"
+                        android:id="@+id/fragment_main_btn_scene"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_scene1" />
+                        android:background="@drawable/ic_scene1"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -259,11 +270,13 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_5"
+                        android:id="@+id/fragment_main_btn_face"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:background="@drawable/ic_faces"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -274,11 +287,13 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/fragment_main_btn_6"
+                        android:id="@+id/fragment_main_btn_building"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:background="@drawable/ic_building"
-                        android:textSize="25sp" />
+                        android:textSize="25sp"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        />
                 </LinearLayout>
 
             </LinearLayout>

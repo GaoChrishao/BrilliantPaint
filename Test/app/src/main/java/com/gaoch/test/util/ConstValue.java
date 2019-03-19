@@ -12,7 +12,8 @@ public class ConstValue {
     public static final String LocalDatabaseName = "brillaintpaint.db";
 
     //service linnk
-    public static final String serverIp="http://brilliantpic.vipgz1.idcfengye.com/";
+    //public static final String serverIp="http://brilliantpic.vipgz1.idcfengye.com/";
+    public static final String serverIp="http://148.70.149.235:6001/";
     public static final String url_StyleAll =serverIp+"style/all";
     public static final String url_StyleSearch(String type){
         return serverIp+"style/search?type="+type;
@@ -26,14 +27,34 @@ public class ConstValue {
     public static final String url_update_username(String newUsername,String password,String account){
         return serverIp+"user/signup?username="+newUsername+"&password="+password+"&account="+account;
     }
+    public static final String url_upload_userpic(String password,String account){
+        return serverIp+"user/uploadUserPic?&password="+password+"&account="+account;
+    }
+
     public static final String url_userfiles(String account){
         return serverIp+"pic/getPic?account="+account;
     }
     public static final String url_newestUserfiles(int id){
         return serverIp+"pic/getPic?id="+id;
     }
+    public static final String url_picUser(String fileName){
+        return serverIp+"images/user/"+fileName;
+    }
     public static final String url_picAfter(String filename){
-        return serverIp+"images/"+filename;
+        return serverIp+"images/after/"+filename;
+    }
+    public static final String url_picPre(String filename){
+        return serverIp+"images/pre/"+filename;
+    }
+
+    public static final String url_commentShare(Long account,String password,String content,Long fileid){
+        return serverIp+"comment/share?account="+account+"&password="+password+"&content="+content+"&fileid="+fileid;
+    }
+    public static final String url_commentGet(Long fileid){
+        return serverIp+"comment/get?fileid="+fileid;
+    }
+    public static final String url_commentNewestGet(Long fileid,Long commentid){
+        return serverIp+"comment/get?fileid="+fileid+"&id="+commentid;
     }
 
 
@@ -44,6 +65,7 @@ public class ConstValue {
 
 
 
+    public static final String key_glideUserpic="key_glide_user_pic";
     public static final String key_image="key_image";
     public static final String key_pic="key_pic";
     public static final String key_imageUrl="key_imageUrl";
@@ -54,6 +76,15 @@ public class ConstValue {
     public static final String key_crop="key_croptype";
     public static final String CROP_BKG="bkg";
     public static final String CROP_USER="user";
+    public static final String key_makeType="key_maketype";
+
+
+    public static final String type_make_ink="ink";
+    public static final String type_make_oil="oil";
+    public static final String type_make_water="water";
+    public static final String type_make_strange="strange";
+    public static final String type_make_building="building";
+
 
 
 
@@ -66,6 +97,7 @@ public class ConstValue {
     public static final String spBkgPath="sp_bkgPath";
     public static final String spAccount="sp_account";
     public static final String spPassword ="sp_password";
+    public static final String spUserPic ="sp_userpic";
     public static final String sp_radius="sp_radius";
     public static final String spExp ="sp_exp";
 
@@ -79,6 +111,12 @@ public class ConstValue {
     //图片尺寸
     public static final int pic_size_postCard_x=800;
     public static final int pic_size_postCard_y=600;
+    public static final int pic_crop_maxWddth=1000;
+    public static final int pic_crop_maxHeight=750;
+    public static final int pic_User_maxWddth=250;
+    public static final int pic_User_maxHeight=250;
+    public static final int pic_quality=80;
+
 
     //图片存储路径
     public static String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/DCIM/BrilliantPaint/";

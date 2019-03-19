@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class FileMessage implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final String status_ok="ok";
