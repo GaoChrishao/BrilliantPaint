@@ -18,7 +18,7 @@
         android:layout_marginTop="30dp"
         android:layout_weight="5">
 
-        <com.gaoch.test.myview.ShadowImageView
+        <com.gaoch.brilliantpic.myview.ShadowImageView
             android:id="@+id/activity_make_iv"
             android:layout_width="match_parent"
             android:layout_height="0dp"

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ActivityPostCard"
     android:orientation="vertical"
-    android:background="@drawable/bkg1"
+    android:background="@drawable/bkg_2"
     >
     <RelativeLayout
         android:id="@+id/activity_postcard_rl"

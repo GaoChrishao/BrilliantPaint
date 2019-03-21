@@ -61,6 +61,8 @@
         android:layout_marginBottom="200dp"
         android:background="@drawable/edittext_normal_1"
         android:text="登入"
+        android:fontFamily="monospace"
+        android:textSize="23sp"
         android:textAllCaps="false"
         android:textColor="@color/LogincolorText"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -78,6 +80,7 @@
         android:layout_marginBottom="8dp"
         android:text="注册"
         android:textColor="#C6FFFFFF"
+        android:fontFamily="monospace"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/login_btn_login"
         app:layout_constraintStart_toEndOf="@+id/login_btn_login" />

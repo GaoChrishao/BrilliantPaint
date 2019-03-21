@@ -6,7 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
     android:padding="5dp"
-    android:elevation="4dp">
+    android:elevation="4dp"
+    >
     <RelativeLayout
         android:id="@+id/item_chosemake_rl"
         android:layout_width="0dp"
@@ -18,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="5dp"
         >
-        <com.gaoch.test.myview.RoundAngleImageView
+        <com.gaoch.brilliantpic.myview.RoundAngleImageView
             android:id="@+id/item_chosemake_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,6 +28,19 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:foreground="?android:attr/selectableItemBackground"
+            />
+        <TextView
+            android:id="@+id/item_chosemake_tv"
+            android:textSize="20sp"
+            android:fontFamily="monospace"
+            android:textStyle="bold"
+            android:text="title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/colorTitle"
             />
     </RelativeLayout>
 

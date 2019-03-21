@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.gaoch.test">
+    package="com.gaoch.brilliantpic">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -19,30 +19,30 @@
 
         >
         <activity
-            android:name=".ActivityDetail"
+            android:name="com.gaoch.brilliantpic.ActivityDetail"
             android:screenOrientation="portrait"
             ></activity>
         <activity
-            android:name=".ActivityCrop"
+            android:name="com.gaoch.brilliantpic.ActivityCrop"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".ActivityPostCard"
+            android:name="com.gaoch.brilliantpic.ActivityPostCard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityMake"
+            android:name="com.gaoch.brilliantpic.ActivityMake"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityMain"
+            android:name="com.gaoch.brilliantpic.ActivityMain"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ActivityLogin"
+            android:name="com.gaoch.brilliantpic.ActivityLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivitySignin"
+            android:name="com.gaoch.brilliantpic.ActivitySignin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityStart"
+            android:name="com.gaoch.brilliantpic.ActivityStart"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

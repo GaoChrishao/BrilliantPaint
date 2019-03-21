@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     >
-    <com.gaoch.test.myview.ShadowImageView
+    <com.gaoch.brilliantpic.myview.ShadowImageView
         android:id="@+id/banner_siv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     style="@style/welcome_page"
     tools:background="@color/color3">
-    >
     <TextView
         android:id="@+id/as_tv_1"
         android:textColor="#FFFFFF"
@@ -17,12 +16,17 @@
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/as_btn_1"
+        android:background="@drawable/background_yuanjiao_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/as_tv_1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:text="开始"
+        android:textColor="@color/colorTitle"
+        android:textSize="20sp"
+        android:fontFamily="monospace"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         />
 
 </com.redbooth.WelcomePageLayout>
