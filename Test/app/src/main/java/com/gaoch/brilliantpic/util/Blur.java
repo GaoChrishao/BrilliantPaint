@@ -338,13 +338,26 @@ public class Blur {
                 int alpha = Color.alpha(pixel); // same as (pixel >>> 24)
                 double gray = (0.3 * red + 0.59 * green + 0.11 * blue);
                 red += (depth * gray);
-                if(red > 255) { red = 255; }
+                if(red > 255) {
+                    red = 255;
+                }else if(red<0){
+                    red=0;
+                }
 
                 green += (depth * gray);
-                if(green > 255) { green = 255; }
+                if(green > 255) {
+                    green = 255;
+                }else if(green<0){
+                    green=0;
+                }
 
                 blue += (depth * gray);
-                if(blue > 255) { blue = 255; }
+                if(blue > 255) {
+                    blue = 255;
+                }
+                else if(blue<0){
+                    blue=0;
+                }
                 bm.setPixel(col, row, Color.argb(alpha, red, green, blue));
             }
         }
