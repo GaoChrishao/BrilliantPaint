@@ -47,7 +47,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class ActivityMake extends Activity {
-    public  volatile String localpicname;
+    public static volatile String localpicname;
     private Drawable pic_show;  //缩放后显示的图片
     private Drawable pic_after;
     private Bitmap pic;  //原图
@@ -62,10 +62,11 @@ public class ActivityMake extends Activity {
     private int prePosition=-1,nowPosition=-1;
     private static final int requestCode_chosePic=001;
     private static final int requestCode_cropPic=003;
-    private static final int msg_finishUploadPic=002;
-    private static final int msg_wrong=003;
-    private static final int msg_wait=004;
-    private static final int msg_toolarge=005;
+    public static final int msg_finishUploadPic=002;
+    public static final int msg_wrong=003;
+    public static final int msg_wait=004;
+    public static final int msg_toolarge=005;
+    public static final int msg_processing=006;
 
     private ProgressDialog progressDialog;
     private LocalDatabaseHelper dbHelper;
@@ -95,12 +96,6 @@ public class ActivityMake extends Activity {
 
         iv_pic.setVisibility(View.GONE);
         ll_bottom.setVisibility(View.GONE);
-        makeType=getIntent().getStringExtra(ConstValue.key_makeType);
-        if(makeType==null||makeType.equals("")){
-            makeType=ConstValue.type_make_all;
-        }
-        initData();
-        setClickEvent();
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll_bottom.getLayoutParams();
         lp.setMargins(0, 0, 0, Utility.getNavigationHeight(this));
         File bkgFile=new File(ConstValue.getBkgPath(getApplicationContext()));
@@ -110,6 +105,21 @@ public class ActivityMake extends Activity {
         }else{
             layout_bkg.setBackground(getResources().getDrawable(R.drawable.bkg_2,null));
         }
+
+        makeType=getIntent().getStringExtra(ConstValue.key_makeType);
+        if(makeType.equals(ConstValue.type_make_camera)){
+            makeType=ConstValue.type_make_all;
+            iv_pic.setVisibility(View.VISIBLE);
+            Intent intent = new Intent(this, ActivityCrop.class);
+            intent.putExtra(ConstValue.key_imageUrl,ConstValue.filePath+"tmp.jpg");
+            intent.putExtra(ConstValue.key_imageCropX,ConstValue.pic_size_postCard_x);
+            intent.putExtra(ConstValue.key_imageCropY,ConstValue.pic_size_postCard_y);
+            startActivityForResult(intent,requestCode_cropPic);
+            Log.e("GGG","选择图片");
+        }
+        initData();
+        setClickEvent();
+
     }
 
     void setClickEvent(){
@@ -185,7 +195,7 @@ public class ActivityMake extends Activity {
                 //更具选择的图片执行上传操作
                 if(progressDialog==null){
                     progressDialog = new ProgressDialog(ActivityMake.this);
-                    progressDialog.setMessage("上传中");
+                    progressDialog.setMessage("上传图片处理中......");
                     progressDialog.setCanceledOnTouchOutside(false);
                 }
                 Log.e("GGG","显示");
@@ -201,7 +211,7 @@ public class ActivityMake extends Activity {
                             }
                             SharedPreferences sp = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
                             FileMessage fileMessage=Utility.uploadLogFile(
-                                    getApplicationContext(),
+                                    handler,
                                     ConstValue.serverIp+"uploadFile?useraccount="+sp.getLong(ConstValue.spAccount,-1)+"&modelname="+styleList.get(nowPosition).getModelname(),
                                     ConstValue.filePath+"tmp.jpg"
                                      );
@@ -330,7 +340,7 @@ public class ActivityMake extends Activity {
         startActivityForResult(intent_choose, requestCode_chosePic);
     }
 
-    Handler handler = new Handler(){
+    public Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
@@ -383,6 +393,11 @@ public class ActivityMake extends Activity {
                     }
                     //Utility.closeProgressDialog(progressDialog);
                     Toast.makeText(ActivityMake.this, "上传图片过大！", Toast.LENGTH_SHORT).show();
+                    break;
+                case msg_processing:
+                    if(progressDialog!=null){
+                        progressDialog.setMessage("上传成功，处理图片中......");
+                    }
                     break;
             }
         }

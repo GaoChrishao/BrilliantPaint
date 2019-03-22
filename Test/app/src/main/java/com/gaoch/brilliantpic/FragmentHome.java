@@ -1,14 +1,11 @@
 package com.gaoch.brilliantpic;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,11 +29,13 @@ import com.gaoch.brilliantpic.util.HttpUtil;
 import com.google.gson.Gson;
 import com.stx.xhb.xbanner.XBanner;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -61,6 +60,15 @@ public class FragmentHome extends Fragment {
     private final int msg_signup=2;
     private final int msg_close=3;
     private final int msg_noAccount=4;
+
+    // 拍照回传码
+    public final static int CAMERA_REQUEST_CODE = 11;
+    // 相册选择回传吗
+    public final static int GALLERY_REQUEST_CODE = 12;
+    // 拍照的照片的存储位置
+    private String mTempPhotoPath;
+    // 照片所在的Uri地址
+    private Uri imageUri;
 
     private Blur.BlurLayout blurLayout1,blurLayout2,blurLayout3,blurLayout4;
 
@@ -117,38 +125,11 @@ public class FragmentHome extends Fragment {
         }
         setBlur();
 
-
-//        Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.font1);
-//        tv_5.setTypeface(typeface);
-//
-//        titles=new ArrayList<>();
-//        imageUrls=new ArrayList<>();
-//        imageUrls.add("https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=199579668,662169770&fm=26&gp=0.jpg");
-//        titles.add("这是第1张图片");
-//        imageUrls.add("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2340194228,2284173225&fm=26&gp=0.jpg");
-//        titles.add("这是第2张图片");
-//        imageUrls.add("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=582402591,1773722533&fm=26&gp=0.jpg");
-//        titles.add("这是第3张图片");
-//        imageUrls.add("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=307943251,2816769785&fm=26&gp=0.jpg");
-//        titles.add("这是第4张图片");
-//        //添加轮播图片数据（图片数据不局限于网络图片、本地资源文件、View 都可以）,刷新数据也是调用该方法
-//        mXBanner.setData(R.layout.item_banner,imageUrls,null);
-//        mXBanner.loadImage(new XBanner.XBannerAdapter() {
-//            @Override
-//            public void loadBanner(XBanner banner, Object model, final View view, int position) {
-//                String url = imageUrls.get(position);
-//                RequestOptions options = new RequestOptions();
-//                options.transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(getContext(),25))).error(R.drawable.background_allfround).placeholder(R.drawable.background_allfround);
-//                Glide.with(getContext()).load(url).apply(options).into((ImageView) view.findViewById(R.id.banner_iv));
-//
-//            }
-//        });
-//
-//
         btn_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "还未完成此功能", Toast.LENGTH_SHORT).show();
+                takePhoto();
+
             }
         });
 
@@ -234,51 +215,6 @@ public class FragmentHome extends Fragment {
                 startActivity(intent);
             }
         });
-//        layout_2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(),ActivityPostCard.class);
-//                startActivity(intent);
-//            }
-//        });
-//        layout_3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(),ActivityMake.class);
-//                startActivity(intent);
-//            }
-//        });
-//        layout_4.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(),ActivityMake.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        onTouchListener = new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                int action = event.getActionMasked();
-//                /* Raise view on ACTION_DOWN and lower it on ACTION_UP. */
-//                switch (action) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        v.setTranslationZ(Utility.dp2px(getContext(),-3));
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        v.setTranslationZ(Utility.dp2px(getContext(),0));
-//                        break;
-//                    default:
-//                        return false;
-//                }
-//                return false;
-//            }
-//        };
-//
-//        layout_1.setOnTouchListener(onTouchListener);
-//        layout_2.setOnTouchListener(onTouchListener);
-//        layout_3.setOnTouchListener(onTouchListener);
-//        layout_4.setOnTouchListener(onTouchListener);
 
 
 
@@ -313,44 +249,24 @@ public class FragmentHome extends Fragment {
                     cursor.close();
                 }
                 break;
+            case CAMERA_REQUEST_CODE:
+                if(resultCode==RESULT_OK){
+                    Toast.makeText(getContext(), "拍照成功！", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(),ActivityMake.class);
+                    intent.putExtra(ConstValue.key_makeType,ConstValue.type_make_camera);
+                    startActivity(intent);
+
+                }else{
+                    Toast.makeText(getContext(), "拍照失败", Toast.LENGTH_SHORT).show();
+
+            }
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * 按照最大范围来放大图片
-     * @param bitmap
-     * @return
-     */
-    public  Drawable ReSizePic(Bitmap bitmap, int maxHeight, int maxWidth, Context context){
-        Bitmap bkg1=bitmap;
-        float prePicWidth=bkg1.getWidth();
-        float prePicHeight=bkg1.getHeight();
-        double displayScale=(maxWidth+0.0)/maxHeight;
-        double prePicScale=prePicWidth/prePicHeight;
-        Log.e("GGG","显示区域:"+maxHeight+","+maxWidth);
-        Log.e("GGG","图片尺寸:"+prePicHeight+","+prePicWidth);
-        Log.e("GGG","显示区域比例:"+displayScale);
-        Log.e("GGG","图片比例:"+prePicScale);
-        if(prePicScale>displayScale){
-            //图片宽度过大,将宽度放大到maxWidth
-            float scaleFactor=maxWidth/prePicWidth;
-            //按照高度缩放
-            Log.e("GGG","缩放后的图片:"+(int)(prePicWidth*scaleFactor)+","+(int)(prePicHeight*scaleFactor));
-            Bitmap bkg_scaled= Bitmap.createScaledBitmap(bkg1,(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
-            return new BitmapDrawable(context.getResources(),bkg_scaled);
 
-
-        }else{
-            //背景图片长度过大，将长度放大到maxHeight
-            float scaleFactor=maxHeight/prePicHeight;
-            //按照宽度缩放
-            Log.e("GGG","缩放后的图片:"+(int)(prePicWidth*scaleFactor)+","+(int)(prePicHeight*scaleFactor));
-            Bitmap bkg_scaled= Bitmap.createScaledBitmap(bkg1,(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
-            return new BitmapDrawable(context.getResources(),bkg_scaled);
-        }
-    }
 
     Handler handler = new Handler(){
         @Override
@@ -389,24 +305,6 @@ public class FragmentHome extends Fragment {
                         level++;
                     }
                     tv_exp.setText("Lv."+level);
-//                    ((ActivityMain)getActivity()).changeVarHead();
-//                    RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop();
-//                    String userpicname=getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUsername,"");
-//                    if(!userpicname.equals("")){
-//                        Glide.with(getContext()).load(ConstValue.url_picUser(userpicname))
-//                                .apply(options)
-//                                .listener(new RequestListener<Drawable>() {
-//                                    @Override
-//                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//
-//                                        return false;
-//                                    }
-//                                    @Override
-//                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                                        return false;
-//                                    }
-//                                }).into(circleImageView);
-//                    }
 
                     break;
                 case msg_close:
@@ -454,6 +352,42 @@ public class FragmentHome extends Fragment {
             }
         });
     }
+
+
+    private void takePhoto(){
+        // android 7.0系统解决拍照的问题
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+//
+//        Intent intentToTakePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intentToTakePhoto.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(ConstValue.getTmpPicPath(getContext()))));
+//        startActivityForResult(intentToTakePhoto, CAMERA_REQUEST_CODE);
+
+
+
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+
+            File file = new File(ConstValue.filePath, "tmp.jpg");
+            String mCurrentPhotoPath = file.getAbsolutePath();
+            Log.e("GGG","path:"+mCurrentPhotoPath);
+
+            Uri fileUri;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                fileUri = FileProvider.getUriForFile(getContext(), "com.gaoch.brilliantpic.fileprovider", file);
+            }else{
+                fileUri=Uri.fromFile(file);
+            }
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+        }
+
+
+
+
+
+    }
+
 
 
     public void setBlur(){

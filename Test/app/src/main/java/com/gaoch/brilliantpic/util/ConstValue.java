@@ -79,6 +79,7 @@ public class ConstValue {
     public static final String key_makeType="key_maketype";
 
 
+    public static final String type_make_camera="camera";
     public static final String type_make_all="all";
     public static final String type_make_ink="ink";
     public static final String type_make_oil="oil";
@@ -119,17 +120,18 @@ public class ConstValue {
     public static final int pic_crop_maxHeight=750;
     public static final int pic_User_maxWddth=250;
     public static final int pic_User_maxHeight=250;
-    public static final int pic_quality=80;
+    public static final int pic_quality=95;
 
 
     //图片存储路径
-    public static String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/DCIM/BrilliantPaint/";
+    public static String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/BrilliantPaint/";
     public static String getBkgPath(Context context){
-        return context.getExternalFilesDir("bky.jpg").getAbsolutePath();
+        return context.getExternalFilesDir("bkg.jpg").getAbsolutePath();
     }
     public static String getBkg_blurPath(Context context){
-        return context.getExternalFilesDir("blurbky.jpg").getAbsolutePath();
+        return context.getExternalFilesDir("blurbkg.jpg").getAbsolutePath();
     }
+
 
 
 
@@ -139,7 +141,8 @@ public class ConstValue {
 
     public static final String[] LOCATIONGPS = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
     };
 
 

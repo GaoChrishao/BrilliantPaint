@@ -5,8 +5,10 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,14 +32,20 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static com.gaoch.brilliantpic.util.ConstValue.LOCATIONGPS;
 
 
 public class ActivityMain extends Activity {
@@ -49,6 +57,7 @@ public class ActivityMain extends Activity {
     private LocalDatabaseHelper dbHelper;
 
 
+    private final int requestPermissionsCode = 100;//权限请求码
 
     private final int msg_noInternet=1;
     private final int msg_getAllStyles=2;
@@ -88,6 +97,7 @@ public class ActivityMain extends Activity {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.close();
         tryGetStyles();
+        requestPermissons();
     }
 
     @Override
@@ -303,6 +313,25 @@ public class ActivityMain extends Activity {
             }
         }
     };
+
+    /**
+     * 检测权限是否开启
+     */
+    private void requestPermissons() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            List<String> mPermissionList = new ArrayList<>();
+            for (int i = 0; i < LOCATIONGPS.length; i++) {
+                if (ContextCompat.checkSelfPermission(this, LOCATIONGPS[i]) != PackageManager.PERMISSION_GRANTED) {
+                    mPermissionList.add(LOCATIONGPS[i]);//添加还未授予的权限
+                }
+            }
+            //申请权限
+            if (mPermissionList.size() > 0) {//有权限没有通过，需要申请
+                ActivityCompat.requestPermissions(this, LOCATIONGPS, requestPermissionsCode);
+            }
+        }
+    }
+
 
 
 }

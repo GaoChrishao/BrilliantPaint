@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -366,12 +367,12 @@ public class Utility {
 
     /**
      * 上传文件到服务器
-     * @param context
+     * @param handler
      * @param servicePath     上传服务器地址
      * @param localFilePath       本地文件的绝对路径
      * @return  接受到的文件在本地的绝对路径
      */
-    public static FileMessage uploadLogFile(Context context, String servicePath, String localFilePath)throws Exception{
+    public static FileMessage uploadLogFile(Handler handler, String servicePath, String localFilePath)throws Exception{
         URL url = new URL(servicePath);
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
 
@@ -410,14 +411,13 @@ public class Utility {
             ds.write(buffer, 0, length);
             sum+=length;
         }
-        Log.e("GGG","上传的图片大小为:"+(sum/8)/1024+"KB");
+        Log.e("GGG","上传的图片大小为:"+(sum/1024)+"KB");
 
         ds.flush();
         fStream.close();
         ds.close();
-        Log.e("GGG","文件上传成功！上传文件为：" + localFilePath);
-        //String filePath= downloadFile(new DataInputStream(con.getInputStream()),new File(oldFilePath).getName());
-        //Log.e("GGG","文件下载成功！下载文件为：" + filePath);
+
+
 
         BufferedReader in = null;
         StringBuilder sb = new StringBuilder();
@@ -429,8 +429,6 @@ public class Utility {
         }
 
         Log.e("GGG",sb.toString());
-//        JSONObject jsonObject = null;
-//        jsonObject = new JSONObject(responseText);
         FileMessage fileMessage = new Gson().fromJson(sb.toString(),FileMessage.class);
 
         return fileMessage;
