@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.gaoch.brilliantpic">
 
@@ -16,9 +15,11 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/MyAppTheme"
+        android:theme="@style/MyAppTheme">
+        <activity android:name=".ActivityVideo">
 
-        >
+        </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.gaoch.brilliantpic.fileprovider"
@@ -30,30 +31,28 @@
         </provider>
 
         <activity
-            android:name="com.gaoch.brilliantpic.ActivityDetail"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:name=".ActivityDetail"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.gaoch.brilliantpic.ActivityCrop"
+            android:name=".ActivityCrop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ActivityPostCard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ActivityMake"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ActivityMain"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.gaoch.brilliantpic.ActivityPostCard"
+            android:name=".ActivityLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.gaoch.brilliantpic.ActivityMake"
+            android:name=".ActivitySignin"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.gaoch.brilliantpic.ActivityMain"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.gaoch.brilliantpic.ActivityLogin"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.gaoch.brilliantpic.ActivitySignin"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.gaoch.brilliantpic.ActivityStart"
+            android:name=".ActivityStart"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

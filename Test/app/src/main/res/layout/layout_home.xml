@@ -117,8 +117,7 @@
                         android:id="@+id/fragment_main_btn_camera"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_menu_camera"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="@drawable/ripple_camera"
                         />
                 </LinearLayout>
 
@@ -133,9 +132,8 @@
                         android:id="@+id/fragment_main_btn_video"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_video"
+                        android:background="@drawable/ripple_video"
                         android:textSize="20sp"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         />
                 </LinearLayout>
 
@@ -150,9 +148,8 @@
                         android:id="@+id/fragment_main_btn_postcard"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_postcard"
+                        android:background="@drawable/ripple_postcard"
                         android:textSize="25sp"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         />
                 </LinearLayout>
 
@@ -199,8 +196,7 @@
                         android:id="@+id/fragment_main_btn_strange"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                        android:background="@drawable/ic_strange1" />
+                        android:background="@drawable/ripple_strange" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -214,8 +210,7 @@
                         android:id="@+id/fragment_main_btn_oil"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_color"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="@drawable/ripple_color"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -230,8 +225,7 @@
                         android:id="@+id/fragment_main_btn_water"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_water1"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="@drawable/ripple_water"
                         android:textSize="25sp" />
                 </LinearLayout>
 
@@ -254,8 +248,7 @@
                         android:id="@+id/fragment_main_btn_ink"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_maobi"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="@drawable/ripple_ink"
                         />
                 </LinearLayout>
 
@@ -270,9 +263,8 @@
                         android:id="@+id/fragment_main_btn_catroon"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_cartoon"
+                        android:background="@drawable/ripple_cartoon"
                         android:textSize="20sp"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         />
                 </LinearLayout>
 
@@ -337,8 +329,7 @@
                         android:id="@+id/fragment_main_btn_scene"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_scene1"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="@drawable/ripple_scene"
                         />
                 </LinearLayout>
 
@@ -353,9 +344,9 @@
                         android:id="@+id/fragment_main_btn_face"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_faces"
+                        android:background="@drawable/ripple_face"
                         android:textSize="20sp"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+
                         />
                 </LinearLayout>
 
@@ -370,9 +361,8 @@
                         android:id="@+id/fragment_main_btn_building"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:background="@drawable/ic_building"
+                        android:background="@drawable/ripple_building"
                         android:textSize="25sp"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         />
                 </LinearLayout>
 

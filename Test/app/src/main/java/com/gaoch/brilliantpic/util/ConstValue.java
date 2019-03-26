@@ -13,7 +13,7 @@ public class ConstValue {
 
     //service linnk
     //public static final String serverIp="http://brilliantpic.vipgz1.idcfengye.com/";
-    public static final String serverIp="http://148.70.149.235:6001/";
+    public static final String serverIp="http://148.70.149.235:1195/";
     public static final String url_StyleAll =serverIp+"style/all";
     public static final String url_StyleSearch(String type){
         return serverIp+"style/search?type="+type;
@@ -124,12 +124,19 @@ public class ConstValue {
 
 
     //图片存储路径
-    public static String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/BrilliantPaint/";
+    public static String picPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/BrilliantPaint/";
+    public static String pic_video_Path = picPath +"/video/";
+    public static String pic_video_tmp_Path = picPath +"/video/tmp/";
+
+
     public static String getBkgPath(Context context){
         return context.getExternalFilesDir("bkg.jpg").getAbsolutePath();
     }
     public static String getBkg_blurPath(Context context){
         return context.getExternalFilesDir("blurbkg.jpg").getAbsolutePath();
+    }
+    public static String get_Path(Context context){
+        return context.getExternalFilesDir("tmp").getAbsolutePath();
     }
 
 

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.gaoch.test"
+        applicationId "com.gaoch.brilliantpic"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
@@ -11,6 +11,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
+
+
     }
     buildTypes {
         release {
@@ -18,6 +20,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
 }
 
 dependencies {
@@ -37,12 +45,11 @@ dependencies {
     implementation 'com.github.xiaohaibin:XBanner:1.6.4'
     implementation 'com.yinglan.shadowimageview:shadowimageview:1.0.4'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
-    implementation 'no.danielzeller.blurbehindlib:blurbehindlib:1.0.0'
     implementation 'com.eightbitlab:blurview:1.5.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
-    implementation 'com.github.mmin18:realtimeblurview:1.1.2'
+    implementation 'com.github.yangjie10930:EpMedia:v0.9.5'
+    implementation 'com.github.HuanTanSheng:EasyPhotos:2.4.0'
+    implementation 'org.jcodec:jcodec-android:0.2.3'
 
 }

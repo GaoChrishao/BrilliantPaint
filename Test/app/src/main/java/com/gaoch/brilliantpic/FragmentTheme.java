@@ -207,7 +207,7 @@ public class FragmentTheme extends Fragment {
     class TaskUPloadUserPic extends AsyncTask<Void,Void, User> {
         @Override
         protected User doInBackground(Void... voids) {
-            Utility.LoadLocalBitmap(ConstValue.filePath+"tmp.jpg");
+            Utility.LoadLocalBitmap(ConstValue.picPath +"tmp.jpg");
             SharedPreferences sharedPreferences =getActivity().getSharedPreferences(ConstValue.sp, Context.MODE_PRIVATE);
             Long account=sharedPreferences.getLong(ConstValue.spAccount,-1);
             String password=sharedPreferences.getString(ConstValue.spPassword,"");
@@ -222,7 +222,7 @@ public class FragmentTheme extends Fragment {
                 user=Utility.uploadUserPicFile(
                         getContext(),
                         ConstValue.url_upload_userpic(password,String.valueOf(account)),
-                        ConstValue.filePath+"tmp.jpg"
+                        ConstValue.picPath +"tmp.jpg"
                 );
             } catch (Exception e) {
                 e.printStackTrace();

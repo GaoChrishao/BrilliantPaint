@@ -85,3 +85,6 @@
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -keep class okio.**{*;}
 -dontwarn okio.**
+
+#第三方
+-keep class com.huantansheng.easyphotos.models.** { *; }

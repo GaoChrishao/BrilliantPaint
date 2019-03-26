@@ -36,7 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Pattern;
 
-import static com.gaoch.brilliantpic.util.ConstValue.filePath;
+import static com.gaoch.brilliantpic.util.ConstValue.picPath;
 
 /**
  * Created by GaoCh on 2018/7/23.
@@ -237,12 +237,12 @@ public class Utility {
 
 
     public static boolean saveDrawableToFile(Drawable drawable,String filename){
-        File file = new File(ConstValue.filePath);
+        File file = new File(ConstValue.picPath);
         if(!file.exists()){
             file.mkdirs();
             Log.e("GGG","创建文件夹");
         }
-        File imageFile=new File(ConstValue.filePath+filename);
+        File imageFile=new File(ConstValue.picPath +filename);
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(imageFile);
@@ -268,12 +268,12 @@ public class Utility {
         return true;
     }
     public static String saveBitmapToFile(Bitmap bitmap,int quality,String fileName,String fileType){
-        File file = new File(filePath);
+        File file = new File(picPath);
         if(!file.exists()){
             file.mkdirs();
             Log.e("GGG","创建文件夹");
         }
-        File imageFile=new File(filePath+fileName+"."+fileType);
+        File imageFile=new File(picPath +fileName+"."+fileType);
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(imageFile);
@@ -487,8 +487,8 @@ public class Utility {
         fStream.close();
         ds.close();
         Log.e("GGG","文件上传成功！上传文件为：" + localFilePath);
-        //String filePath= downloadFile(new DataInputStream(con.getInputStream()),new File(oldFilePath).getName());
-        //Log.e("GGG","文件下载成功！下载文件为：" + filePath);
+        //String picPath= downloadFile(new DataInputStream(con.getInputStream()),new File(oldFilePath).getName());
+        //Log.e("GGG","文件下载成功！下载文件为：" + picPath);
 
         BufferedReader in = null;
         StringBuilder sb = new StringBuilder();
@@ -514,7 +514,7 @@ public class Utility {
      */
     public static String downloadFile(DataInputStream dis, String fileName)throws Exception {
         Log.e("GGG","开始下载文件");
-        File file = new File(ConstValue.filePath+fileName);
+        File file = new File(ConstValue.picPath +fileName);
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -529,7 +529,7 @@ public class Utility {
         }
         fps.flush();
         fps.close();
-        return ConstValue.filePath+fileName;
+        return ConstValue.picPath +fileName;
     }
 
 

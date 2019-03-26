@@ -3,7 +3,6 @@ package com.gaoch.brilliantpic;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,13 +61,9 @@ public class FragmentHome extends Fragment {
     private final int msg_noAccount=4;
 
     // 拍照回传码
-    public final static int CAMERA_REQUEST_CODE = 11;
-    // 相册选择回传吗
-    public final static int GALLERY_REQUEST_CODE = 12;
-    // 拍照的照片的存储位置
-    private String mTempPhotoPath;
-    // 照片所在的Uri地址
-    private Uri imageUri;
+    public final static int REQUEST_CAMERA = 11;
+
+
 
     private Blur.BlurLayout blurLayout1,blurLayout2,blurLayout3,blurLayout4;
 
@@ -144,7 +139,8 @@ public class FragmentHome extends Fragment {
         btn_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "还未完成此功能", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(),ActivityVideo.class);
+                startActivity(intent);
             }
         });
 
@@ -237,19 +233,7 @@ public class FragmentHome extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case 0:
-                if (resultCode == RESULT_OK) {
-                    Uri imageUri = data.getData();//图片的相对路径
-                    Cursor cursor = getContext().getContentResolver().query(imageUri, null, null, null, null);//用ContentProvider查找选中的图片
-                    cursor.moveToFirst();
-                    final String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));//获取图片的绝对路径
-                    Log.d("GGG", path);
-                    //FrameLayout layout = findViewById(R.id.main_fragment);
-                    //layout.setBackground(Drawable.createFromPath(path));
-                    cursor.close();
-                }
-                break;
-            case CAMERA_REQUEST_CODE:
+            case REQUEST_CAMERA:
                 if(resultCode==RESULT_OK){
                     Toast.makeText(getContext(), "拍照成功！", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getContext(),ActivityMake.class);
@@ -361,13 +345,13 @@ public class FragmentHome extends Fragment {
 //
 //        Intent intentToTakePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //        intentToTakePhoto.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(ConstValue.getTmpPicPath(getContext()))));
-//        startActivityForResult(intentToTakePhoto, CAMERA_REQUEST_CODE);
+//        startActivityForResult(intentToTakePhoto, REQUEST_CAMERA);
 
 
 
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 
-            File file = new File(ConstValue.filePath, "tmp.jpg");
+            File file = new File(ConstValue.picPath, "tmp.jpg");
             String mCurrentPhotoPath = file.getAbsolutePath();
             Log.e("GGG","path:"+mCurrentPhotoPath);
 
@@ -379,7 +363,7 @@ public class FragmentHome extends Fragment {
                 fileUri=Uri.fromFile(file);
             }
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-            startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            startActivityForResult(takePictureIntent, REQUEST_CAMERA);
         }
 
 

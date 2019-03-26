@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -52,7 +51,7 @@ public class ActivityMake extends Activity {
     private Drawable pic_after;
     private Bitmap pic;  //原图
     private boolean hasPic=false;
-    private ImageView iv_add;
+    private Button btn_add;
     private ShadowImageView iv_pic;
     private LinearLayout ll_bottom,layout_bkg; //选择风格种类的lineaLayout,与选择
     private RecyclerView recyclerView;
@@ -82,7 +81,7 @@ public class ActivityMake extends Activity {
 
 
         setContentView(R.layout.activity_make);
-        iv_add=findViewById(R.id.activity_make_iv_add);
+        btn_add =findViewById(R.id.activity_make_btn_add);
         iv_pic=findViewById(R.id.activity_make_iv);
         recyclerView=findViewById(R.id.activity_make_rv);
         btn_yes=findViewById(R.id.activity_make_btn_yes);
@@ -111,7 +110,7 @@ public class ActivityMake extends Activity {
             makeType=ConstValue.type_make_all;
             iv_pic.setVisibility(View.VISIBLE);
             Intent intent = new Intent(this, ActivityCrop.class);
-            intent.putExtra(ConstValue.key_imageUrl,ConstValue.filePath+"tmp.jpg");
+            intent.putExtra(ConstValue.key_imageUrl,ConstValue.picPath +"tmp.jpg");
             intent.putExtra(ConstValue.key_imageCropX,ConstValue.pic_size_postCard_x);
             intent.putExtra(ConstValue.key_imageCropY,ConstValue.pic_size_postCard_y);
             startActivityForResult(intent,requestCode_cropPic);
@@ -174,7 +173,7 @@ public class ActivityMake extends Activity {
         recyclerView.setItemViewCacheSize(0);
 
 
-        iv_add.setOnClickListener(new View.OnClickListener() {
+        btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("GGG","点击添加");
@@ -205,7 +204,7 @@ public class ActivityMake extends Activity {
                     @Override
                     public void run() {
                         try{
-                            File file=new File(ConstValue.filePath+"tmp.jpg");
+                            File file=new File(ConstValue.picPath +"tmp.jpg");
                             if(!file.exists()){
                                 Utility.saveBitmapToFile(pic,ConstValue.pic_quality,"tmp","jpg");
                             }
@@ -213,7 +212,7 @@ public class ActivityMake extends Activity {
                             FileMessage fileMessage=Utility.uploadLogFile(
                                     handler,
                                     ConstValue.serverIp+"uploadFile?useraccount="+sp.getLong(ConstValue.spAccount,-1)+"&modelname="+styleList.get(nowPosition).getModelname(),
-                                    ConstValue.filePath+"tmp.jpg"
+                                    ConstValue.picPath +"tmp.jpg"
                                      );
                             if(file.exists())file.delete();
                             switch (fileMessage.getStatus()){
@@ -257,7 +256,7 @@ public class ActivityMake extends Activity {
                     hasPic=false;
                     ll_bottom.setVisibility(View.GONE);
                     iv_pic.setVisibility(View.GONE);
-                    iv_add.setVisibility(View.VISIBLE);
+                    btn_add.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -279,9 +278,9 @@ public class ActivityMake extends Activity {
         super.onResume();
         if(!hasPic){
             iv_pic.setVisibility(View.INVISIBLE);
-            iv_add.setVisibility(View.VISIBLE);
+            btn_add.setVisibility(View.VISIBLE);
         }else{
-            iv_add.setVisibility(View.GONE);
+            btn_add.setVisibility(View.GONE);
             iv_pic.setVisibility(View.VISIBLE);
         }
     }
@@ -319,7 +318,7 @@ public class ActivityMake extends Activity {
                     pic=bd.getBitmap();
                     pic_show = Utility.ReSizePic(pic,(int)(iv_pic.getMeasuredHeight()),(int)(iv_pic.getMeasuredWidth()),this);
                     hasPic=true;
-                    iv_add.setVisibility(View.GONE);
+                    btn_add.setVisibility(View.GONE);
                     iv_pic.setVisibility(View.VISIBLE);
                     iv_pic.setImageDrawable(pic_show);
                     ll_bottom.setVisibility(View.VISIBLE);
@@ -426,7 +425,7 @@ public class ActivityMake extends Activity {
                     //Toast.makeText(ActivityMake.this, "你点击了Share", Toast.LENGTH_SHORT).show();
                     Intent shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, ConstValue.filePath+localpicname);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, ConstValue.picPath +localpicname);
                     shareIntent.setType("image/*");
                     startActivity(Intent.createChooser(shareIntent, "分享到"));
                 }
@@ -436,7 +435,7 @@ public class ActivityMake extends Activity {
                     //Toast.makeText(ActivityMake.this, "你点击了取消", Toast.LENGTH_SHORT).show();
                 }
             });
-            viewDialogFragment.setMessage(ConstValue.filePath+localpicname);
+            viewDialogFragment.setMessage(ConstValue.picPath +localpicname);
             viewDialogFragment.show(getFragmentManager());
         }
     }

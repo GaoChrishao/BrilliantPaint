@@ -31,8 +31,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:shadowRound="5dp" />
 
-        <ImageView
-            android:id="@+id/activity_make_iv_add"
+        <Button
+            android:id="@+id/activity_make_btn_add"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
@@ -41,8 +41,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_add"
+            android:background="@drawable/ripple_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
