@@ -15,7 +15,7 @@
         android:layout_marginTop="80dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/ripple_add"
+        android:background="@drawable/ripple_mutipic"
         app:layout_constraintBottom_toTopOf="@+id/video_btn_music"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

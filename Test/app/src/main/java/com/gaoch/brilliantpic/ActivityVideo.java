@@ -28,15 +28,13 @@ import org.jcodec.common.io.SeekableByteChannel;
 import org.jcodec.common.model.Rational;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import VideoHandle.EpEditor;
+import VideoHandle.OnEditorListener;
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,7 +52,7 @@ public class ActivityVideo extends AppCompatActivity {
 
     private List<String> picPathList=new ArrayList<>();
     private boolean hasFindMusic,hasFIndPics;
-    private volatile String videoPath;
+    private volatile String videoPath,musicpath;
 
 
 
@@ -92,7 +90,7 @@ public class ActivityVideo extends AppCompatActivity {
             public void onClick(View v) {
                 EasyPhotos.createAlbum(ActivityVideo.this, false, GlideEngine.getInstance())//参数说明：上下文，是否显示相机按钮，[配置Glide为图片加载引擎](https://github.com/HuanTanSheng/EasyPhotos/wiki/12-%E9%85%8D%E7%BD%AEImageEngine%EF%BC%8C%E6%94%AF%E6%8C%81%E6%89%80%E6%9C%89%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93)
                         .setFileProviderAuthority("com.gaoch.brilliantpic.fileprovider")
-                        .setCount(9)//参数说明：最大可选数，默认1
+                        .setCount(ConstValue.video_maxPictures)//参数说明：最大可选数，默认1
                         .setPuzzleMenu(false)//参数说明：是否显示相机按钮,默认显示，传false即不显示
                         .start(REQUEST_PICK_PICS);
             }
@@ -101,10 +99,11 @@ public class ActivityVideo extends AppCompatActivity {
         btn_choseMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
+                Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 //intent.setData(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("audio/*");
-                startActivityForResult(intent,REQUEST_PICK_MUSIC);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(Intent.createChooser(intent,"choose music"),REQUEST_PICK_MUSIC);
             }
         });
     }
@@ -116,35 +115,36 @@ public class ActivityVideo extends AppCompatActivity {
         switch (requestCode){
             case REQUEST_PICK_PICS:
                 if(RESULT_OK == resultCode){
-                    Log.e("GGG","选择结束");
+                    Log.d("GGG","选择结束");
                     //返回图片地址集合：如果你只需要获取图片的地址，可以用这个
-                    ArrayList<String> resultPaths = data.getStringArrayListExtra(EasyPhotos.RESULT_PATHS);
+                     ArrayList<String> resultPaths = data.getStringArrayListExtra(EasyPhotos.RESULT_PATHS);
                     //返回图片地址集合时如果你需要知道用户选择图片时是否选择了原图选项，用如下方法获取
                     //boolean selectedOriginal = data.getBooleanExtra(EasyPhotos.RESULT_SELECTED_ORIGINAL, false);
 
                     picPathList.clear();
                     picPathList.addAll(resultPaths);
-                    if(picPathList.size()>0){
-                        TaskCopyPics taskCopyPics=new TaskCopyPics();
-                        taskCopyPics.execute(picPathList);
-                    }
                     btn_chosePics.setVisibility(View.GONE);
-
+                    hasFIndPics=true;
+                    processVideo();
 
                 }
                 break;
             case REQUEST_PICK_MUSIC:
                 if(resultCode==RESULT_OK){
                     Uri musicUri = data.getData();//相对路径
-                    Log.e("GGG",musicUri.getPath());
-//                    Cursor cursor = getContentResolver().query(musicUri, null, null, null, null);//用ContentProvider查找选中的音频
-//                    cursor.moveToFirst();
-                   // final String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));//获取音频的绝对路径
-                   // String audioPath= UriUtils.getPath(this,musicUri);
-                  //  Log.e("GGG",audioPath);
-                    hasFindMusic=true;
+                    musicpath=Utility.getPathFromUri(musicUri,this);
+                    Log.d("GGG","音频地址:"+musicpath);
 
+                    //判断音频格式
+                    String s[]=musicpath.split("\\.");
+                    String filetype=s[s.length-1];
+                    if(!(filetype.equals("mp3")||filetype.equals("MP3"))){
+                        Toast.makeText(this, "请选择mp3格式的音频文件!", Toast.LENGTH_SHORT).show();
+
+                        return;
+                    }
                     btn_choseMusic.setVisibility(View.GONE);
+                    hasFindMusic=true;
                     processVideo();
 
 
@@ -153,6 +153,7 @@ public class ActivityVideo extends AppCompatActivity {
         }
 
     }
+
 
 
 
@@ -181,25 +182,6 @@ public class ActivityVideo extends AppCompatActivity {
 
 
 
-//        ////参数分别是图片集合路径,输出路径,输出视频的宽度，输出视频的高度，输出视频的帧率
-//        MyEpEditor.pic2video(ConstValue.pic_video_tmp_Path, ConstValue.pic_video_Path+"a.mp4", ConstValue.pic_crop_maxWddth, ConstValue.pic_crop_maxHeight, 0.2f, new OnEditorListener() {
-//            @Override
-//            public void onSuccess() {
-//                Log.e("GGG","完成");
-//            }
-//
-//            @Override
-//            public void onFailure() {
-//                Log.e("GGG","失败");
-//                //Toast.makeText(ActivityVideo.this, "失败!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onProgress(float progress) {
-//                System.out.println("。");
-//            }
-//        });
-
 
     }
 
@@ -211,30 +193,29 @@ public class ActivityVideo extends AppCompatActivity {
             File file = new File(ConstValue.pic_video_tmp_Path);
             SeekableByteChannel out = null;
             try {
-                videoPath=ConstValue.pic_video_Path+System.currentTimeMillis()+".mp4";
-                out = NIOUtils.writableFileChannel(videoPath);
-                int fps=5;
-                AndroidSequenceEncoder encoder = new AndroidSequenceEncoder(out, Rational.R(fps, 1));
                 if(!file.exists()){
-                    return false;
+                    file.mkdirs();
                 }else{
-                    List<File> files= Arrays.asList(file.listFiles());
-                    List<Bitmap> bitmapList=new ArrayList<>();
-                    int size=files.size();
-                    if(files!=null&&files.size()>0){
-                        for(int i=0;i<files.size();i++){
-                            Bitmap bitmap=getBitmap(files.get(i).getAbsolutePath(), Color.WHITE);
-                            for(int j=0;j<fps;j++){
+                    if(picPathList!=null&&picPathList.size()>0){
+                        Log.d("GGG","开始图片合成视频");
+                        videoPath=ConstValue.pic_video_tmp_Path+"tmp.mp4";
+                        out = NIOUtils.writableFileChannel(videoPath);
+                        AndroidSequenceEncoder encoder = new AndroidSequenceEncoder(out, Rational.R(ConstValue.video_fps, ConstValue.video_den));
+                        int size=picPathList.size();
+                        for(int i=0;i<size;i++){
+                            Bitmap bitmap=getBitmap(picPathList.get(i), Color.WHITE);
+                            for(int j=0;j<ConstValue.video_fps;j++){
                                 encoder.encodeImage(bitmap);
-                                publishProgress((int)((i*fps+j+1.0)/(size*fps)*100));
+                                publishProgress((int)((i*ConstValue.video_fps+j+1.0)/(size*ConstValue.video_fps)*100));
                             }
 
                         }
+                        // Finalize the encoding, i.e. clear the buffers, write the header, etc.
+                        encoder.finish();
                     }
 
                 }
-                // Finalize the encoding, i.e. clear the buffers, write the header, etc.
-                encoder.finish();
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -248,33 +229,79 @@ public class ActivityVideo extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            if(progressDialog!=null){
-                progressDialog.dismiss();
-                progressDialog=null;
-            }
-            if(aBoolean==true){
-                ViewDialogFragment viewDialogFragment = new ViewDialogFragment();
-                viewDialogFragment.setClickListener(new ViewDialogFragment.ClickShare() {
+            progressDialog.setTitle("正在添加BGM...");
+
+
+            if(aBoolean){
+                File muFIle=new File(videoPath);
+                if(muFIle.exists()){
+                    Log.d("GGG","视频存在");
+                }else{
+                    Log.e("GGG","视频不存在!");
+                }
+                muFIle=new File(musicpath);
+                if(muFIle.exists()){
+                    Log.d("GGG","音乐存在");
+                }else{
+                    Log.e("GGG","音乐不存在");
+                }
+                //参数分别是视频路径，音频路径，输出路径,原始视频音量(1为100%,0.7为70%,以此类推),添加音频音量
+                final String newVideoPath=ConstValue.pic_video_Path+System.currentTimeMillis()+".mp4";
+                EpEditor.music(videoPath, musicpath, newVideoPath, 1.0f, 1.0f, new OnEditorListener() {
                     @Override
-                    public void onClickShare() {
-                        //Toast.makeText(ActivityMake.this, "你点击了Share", Toast.LENGTH_SHORT).show();
-                        Intent shareIntent = new Intent();
-                        shareIntent.setAction(Intent.ACTION_SEND);
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, videoPath);
-                        shareIntent.setType("video/*");
-                        startActivity(Intent.createChooser(shareIntent, "分享到"));
+                    public void onSuccess() {
+                        if(progressDialog!=null){
+                            progressDialog.dismiss();
+                            progressDialog=null;
+                        }
+
+                        btn_choseMusic.setVisibility(View.VISIBLE);
+                        btn_chosePics.setVisibility(View.VISIBLE);
+
+                        File preFile=new File(videoPath);
+                        if(preFile.exists()){
+                            preFile.delete();
+                        }
+                        videoPath=newVideoPath;
+                        ViewDialogFragment viewDialogFragment = new ViewDialogFragment();
+                        viewDialogFragment.setClickListener(new ViewDialogFragment.ClickShare() {
+                            @Override
+                            public void onClickShare() {
+                                Intent shareIntent = new Intent();
+                                shareIntent.setAction(Intent.ACTION_SEND);
+                                shareIntent.putExtra(Intent.EXTRA_STREAM, videoPath);
+                                shareIntent.setType("video/*");
+                                startActivity(shareIntent);
+                            }
+                        }, new ViewDialogFragment.ClickBack() {
+                            @Override
+                            public void onClickLike() {
+                            }
+                        });
+
+                        viewDialogFragment.setMessage(newVideoPath);
+                        viewDialogFragment.show(getFragmentManager());
                     }
-                }, new ViewDialogFragment.ClickBack() {
+
                     @Override
-                    public void onClickLike() {
-                        //Toast.makeText(ActivityMake.this, "你点击了取消", Toast.LENGTH_SHORT).show();
+                    public void onFailure() {
+
+                    }
+
+                    @Override
+                    public void onProgress(float progress) {
+                        //这里获取处理进度
+                        progressDialog.setProgress((int)(progress*100));
+                        Log.e("GGG","添加音频中...");
                     }
                 });
-                viewDialogFragment.setMessage(videoPath);
-                viewDialogFragment.show(getFragmentManager());
             }else{
-                Toast.makeText(ActivityVideo.this, "失败!", Toast.LENGTH_SHORT).show();
+
             }
+
+
+
+
 
 
         }
@@ -298,68 +325,10 @@ public class ActivityVideo extends AppCompatActivity {
 
 
 
-    class TaskCopyPics extends AsyncTask<List<String>,Void,Boolean>{
-
-
-        @Override
-        protected Boolean doInBackground(List<String>... lists) {
-
-            File file=new File(ConstValue.pic_video_tmp_Path);
-            Log.e("GGG",file.getAbsolutePath());
-            if(!file.exists()){
-                file.mkdirs();
-            }else{
-                //先删除之前保存下来的图片文件
-                List<File> files= Arrays.asList(file.listFiles());
-                if(files!=null&&files.size()>0){
-                    for(int i=0;i<files.size();i++){
-                        files.get(i).delete();
-                    }
-                }
-            }
-
-
-            List<String> stringList=lists[0];
-
-            Log.e("GGG","开始复制文件:"+stringList.size()+","+stringList.get(0));
-
-            for(int i=0;i<stringList.size();i++){
-                File file1=new File(stringList.get(i));
-                if(file1.exists()){
-                    try {
-                        InputStream inStream = new FileInputStream(file1);
-                        FileOutputStream fs = new FileOutputStream(ConstValue.pic_video_tmp_Path+"pic"+i+".jpg");
-                        byte[] buffer = new byte[1024];
-                        int byteread;
-                        long bytesum=0;
-                        while ( (byteread = inStream.read(buffer)) != -1) {
-                            bytesum += byteread; //字节数 文件大小
-                            fs.write(buffer, 0, byteread);
-                        }
-                        inStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            Toast.makeText(ActivityVideo.this, "图片移动完毕!", Toast.LENGTH_SHORT).show();
-            hasFIndPics=true;
-            processVideo();
-        }
-    }
-
     private Bitmap getBitmap(String photoLink, @ColorInt int backgroundColor) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        return scaleFillBackground(BitmapFactory.decodeFile(photoLink, options), ConstValue.pic_crop_maxWddth,ConstValue.pic_crop_maxHeight, backgroundColor);
+        return scaleFillBackground(BitmapFactory.decodeFile(photoLink, options), ConstValue.video_width,ConstValue.video_height, backgroundColor);
     }
 
 

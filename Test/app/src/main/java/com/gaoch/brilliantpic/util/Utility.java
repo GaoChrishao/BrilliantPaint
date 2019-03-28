@@ -3,15 +3,17 @@ package com.gaoch.brilliantpic.util;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -599,25 +601,54 @@ public class Utility {
 
     }
 
-    /**
-     * 是否开启毛玻璃
-     * @return
-     */
-    public static boolean getIsBlur(Context context){
-        SharedPreferences configPref = context.getSharedPreferences(ConstValue.sp, Context.MODE_PRIVATE);
-        boolean is = configPref.getBoolean(ConstValue.spIsBlur, true);
-        return is;
-    }
 
     /**
-     * 是否开启毛玻璃
+     * 从本地选择媒体文件，转化为路径
+     * @param uri
+     * @param context
      * @return
      */
-    public static void SetIsBlur(Context context,boolean isBlur){
-        SharedPreferences.Editor editor = context.getSharedPreferences(ConstValue.sp, Context.MODE_PRIVATE).edit();
-        editor.putBoolean(ConstValue.spIsBlur,isBlur);
-        editor.apply();
+    public static String getPathFromUri(Uri uri,Context context){
+        if (Build.VERSION.SDK_INT >= 29){
+            String s=uri.getPath();
+            Log.e("GGG",s);
+        }
+        final String docId = DocumentsContract.getDocumentId(uri);
+        final String[] split = docId.split(":");
+        final String type = split[0];
+        Uri contentUri = null;
+        if ("image".equals(type)) {
+            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        } else if ("video".equals(type)) {
+            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        } else if ("audio".equals(type)) {
+            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        }
+        final String selection = "_id=?";
+        final String[] selectionArgs = new String[]{split[1]};
+        return getDataColumn(context, contentUri, selection, selectionArgs);
     }
+
+    private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {column};
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+
+
+
 
 
 }

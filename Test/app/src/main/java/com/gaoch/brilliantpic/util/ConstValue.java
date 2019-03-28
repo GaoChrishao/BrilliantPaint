@@ -123,9 +123,20 @@ public class ConstValue {
     public static final int pic_quality=95;
 
 
+    //视频相关
+    public static final int video_fps=5;    //视频的fps
+    public static final int video_maxPictures=20; //最大可以选择图片数量
+    public static final int video_width=1000;
+    public static final int video_height=750;
+    public static final int video_den=2;    //每张图片的显示时间
+    public static final int video_den_1=3;
+
+
     //图片存储路径
     public static String picPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/BrilliantPaint/";
+    //视频存储路径
     public static String pic_video_Path = picPath +"/video/";
+    //暂时存储路径
     public static String pic_video_tmp_Path = picPath +"/video/tmp/";
 
 
@@ -134,9 +145,6 @@ public class ConstValue {
     }
     public static String getBkg_blurPath(Context context){
         return context.getExternalFilesDir("blurbkg.jpg").getAbsolutePath();
-    }
-    public static String get_Path(Context context){
-        return context.getExternalFilesDir("tmp").getAbsolutePath();
     }
 
 
