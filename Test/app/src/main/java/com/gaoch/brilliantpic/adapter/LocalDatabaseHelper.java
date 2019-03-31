@@ -21,7 +21,7 @@ import java.util.List;
 public class LocalDatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     public static int INITIAL_VERSION = 1 ; // 初始版本号
-    public static int NEW_VERSION = 2 ;       // 最新的版本号 ,增加styles表
+    public static int NEW_VERSION = 3 ;       // 最新的版本号 ,增加styles表
     public static String table_name="styles";
     public static final String CREATE_STYLES ="create table styles("
             +"id integer primary key autoincrement,"
@@ -56,6 +56,11 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         if(oldVersion == INITIAL_VERSION &&newVersion==2){
             db.execSQL(CREATE_USERFILES);
             oldVersion++;
+        }
+
+        if(oldVersion == INITIAL_VERSION &&newVersion==3){
+            db.execSQL("alter table userfiles add column likes int default 0");
+            db.execSQL("alter table userfiles add column commentsnum int default 0");
         }
         Log.e("GGG","数据库升级成功");
         //Toast.makeText(context, "数据库升级", Toast.LENGTH_SHORT).show();
@@ -92,6 +97,9 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     value.put("name",jsonObject.getString("name"));
                     value.put("modelname",jsonObject.getString("modelname"));
                     value.put("picurl",jsonObject.getString("picurl"));
+                    value.put("likes",jsonObject.getString("likes"));
+                    value.put("commentsnum",jsonObject.getString("commentsnum"));
+
                     db.update("styles",value,"id=?",new String[]{id+""});
                 }else{
                     //执行写入数据库操作
@@ -100,6 +108,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     value.put("name",jsonObject.getString("name"));
                     value.put("modelname",jsonObject.getString("modelname"));
                     value.put("picurl",jsonObject.getString("picurl"));
+                    value.put("likes",jsonObject.getString("likes"));
+                    value.put("commentsnum",jsonObject.getString("commentsnum"));
                     db.insert("styles",null,value);
                 }
 

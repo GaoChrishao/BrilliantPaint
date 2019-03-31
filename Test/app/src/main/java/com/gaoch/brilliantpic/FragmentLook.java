@@ -39,7 +39,7 @@ import okhttp3.Response;
 public class FragmentLook extends Fragment {
     private RecyclerView recyclerView;
     private ShowPicAdapter adapter;
-    private List<Pic> picList;
+    public static List<Pic> picList;
     private ConstraintLayout layout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private final int msg_noInternet=0;
@@ -71,7 +71,7 @@ public class FragmentLook extends Fragment {
 
         adapter=new ShowPicAdapter(getContext(),getActivity().getWindow(), picList);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemViewCacheSize(0);//设置最大缓存数目
@@ -169,6 +169,8 @@ public class FragmentLook extends Fragment {
                             String picname=jsonObject.getString("picname");
                             String userpic=jsonObject.getString("userpic");
                             long time=jsonObject.getLong("time");
+                            long likes=jsonObject.getLong("likes");
+                            long commentsnum=jsonObject.getLong("commentsnum");
                             Pic pic=new Pic();
                             pic.setId(id);
                             pic.setUsername(username);
@@ -177,6 +179,9 @@ public class FragmentLook extends Fragment {
                             pic.setAccount(account);
                             pic.setTime(time);
                             pic.setUserpic(userpic);
+                            pic.setCommentsnum(commentsnum);
+                            pic.setLikes(likes);
+
                             picList.add(pic);
                         }
                     }
@@ -211,4 +216,7 @@ public class FragmentLook extends Fragment {
             }
         }
     };
+
+
+
 }

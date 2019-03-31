@@ -57,6 +57,19 @@ public class ConstValue {
         return serverIp+"comment/get?fileid="+fileid+"&id="+commentid;
     }
 
+    public static final String url_BasicUserInfo(Long account){
+        return serverIp+"user/getBasic?account="+account;
+    }
+
+    public static final String url_sendIsLike(Long account,Long fileid,String password,boolean isLike){
+        return serverIp+"like/shareLike?account="+account+"&password="+password+"&isLike="+isLike+"&fileid="+fileid;
+    }
+    public static final String url_getIsLike(Long account,Long fileid){
+        return serverIp+"like/getIsLike?account="+account+"&fileid="+fileid;
+    }
+
+
+
 
     public static final int max_length_username=16;
     public static final int max_length_password=16;

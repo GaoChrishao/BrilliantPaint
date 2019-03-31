@@ -17,13 +17,16 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.gaoch.brilliantpic.adapter.CommentsAdapter;
+import com.gaoch.brilliantpic.myclass.BasicUserInfo;
 import com.gaoch.brilliantpic.myclass.Comment;
+import com.gaoch.brilliantpic.myclass.Like;
 import com.gaoch.brilliantpic.myclass.Pic;
 import com.gaoch.brilliantpic.myview.DialogWrite;
 import com.gaoch.brilliantpic.util.ConstValue;
 import com.gaoch.brilliantpic.util.HttpUtil;
 import com.gaoch.brilliantpic.util.Utility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +38,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -44,9 +49,9 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class ActivityDetail extends AppCompatActivity {
-    private TextView tv_username,tv_detail;
+    private TextView tv_username,tv_detail,tv_likes,tv_commentsnum;
     private CircleImageView cv_user;
-    private ImageView iv_pic;
+    private ImageView iv_pic,iv_like;
     private Pic pic;
     private LinearLayout layout;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -57,6 +62,8 @@ public class ActivityDetail extends AppCompatActivity {
     private final int msg_nomore=1112;
     private final int msg_update=1113;
     private final int msg_make=1114;
+    private final int msg_getIsLike=1115;
+    private final int msg_sendIsLike=1116;
     private  boolean hasMore = true; // 是否还有
     private FloatingActionButton floatBtn;
     // 若是上拉加载更多的网络请求 则不需要删除数据
@@ -64,6 +71,9 @@ public class ActivityDetail extends AppCompatActivity {
     // 最后一个条目位置
     private  int lastVisibleItem = -1;
     private  boolean loading=false;
+
+    private volatile boolean hasGetIsLike=false;
+    private volatile boolean isLike=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +85,10 @@ public class ActivityDetail extends AppCompatActivity {
 
         tv_detail=findViewById(R.id.detail_showpic_des);
         tv_username=findViewById(R.id.detail_showpic_userName);
+        tv_likes=findViewById(R.id.detail_showpic_tv_likes);
+        tv_commentsnum=findViewById(R.id.detail_showpic_tv_commentsnum);
         iv_pic=findViewById(R.id.detail_showpic_pic);
+        iv_like=findViewById(R.id.detail_showpic_iv_like);
         cv_user=findViewById(R.id.detail_showpic_userPic);
         layout = findViewById(R.id.detail_layout);
         swipeRefreshLayout=findViewById(R.id.detail_showpic_swipe);
@@ -89,6 +102,8 @@ public class ActivityDetail extends AppCompatActivity {
             if(pic!=null){
                 tv_username.setText(pic.getUsername());
                 tv_detail.setText(pic.getStylename());
+                tv_likes.setText(pic.getLikes()+"");
+                tv_commentsnum.setText(pic.getCommentsnum()+"");
                 RequestOptions options1 = new RequestOptions().centerCrop();
                 RequestOptions options2 = new RequestOptions().centerCrop().dontAnimate();
                 //RequestOptions options = new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(this,25))).error(R.drawable.background_all_round).placeholder(R.drawable.background_all_round);
@@ -103,8 +118,31 @@ public class ActivityDetail extends AppCompatActivity {
 
         commentList=new ArrayList<>();
         commentsAdapter=new CommentsAdapter(this,getWindow(),commentList);
+        commentsAdapter.setOnItemClickListener(new CommentsAdapter.mOnItemClickListener() {
+            @Override
+            public void onClick(CommentsAdapter.ViewHolder viewHolder, int position) {
+                BasicUserInfo basicUserInfo=new BasicUserInfo();
+                basicUserInfo.setAccount(commentList.get(position).getAccount());
+                basicUserInfo.setUserpic(commentList.get(position).getUserpic());
+                basicUserInfo.setUsername(commentList.get(position).getUsername());
+                Intent intent1=new Intent(ActivityDetail.this,ActivityUserInfo.class);
+
+
+
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityDetail.this,
+
+                        new Pair<View, String>(viewHolder.username,getResources().getString(R.string.s_userName)),
+                        new Pair<View, String>(viewHolder.userpic,getResources().getString(R.string.s_userPic))
+
+                ).toBundle();
+                intent1.putExtra(ConstValue.bundle_user,basicUserInfo);
+                startActivity(intent1,bundle);
+
+
+            }
+        });
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setAdapter(commentsAdapter);
         recyclerView.setLayoutManager(layoutManager);
         //recyclerView.setItemViewCacheSize(0);//设置最大缓存数目
@@ -154,6 +192,22 @@ public class ActivityDetail extends AppCompatActivity {
             }
         });
 
+        iv_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(hasGetIsLike){
+                    isLike=(!isLike);
+                    Long likesnum=Long.valueOf(tv_likes.getText()+"");
+                    if(isLike){
+                        tv_likes.setText((likesnum+1)+"");
+                    }else{
+                        tv_likes.setText((likesnum-1)+"");
+                    }
+                    trySendIsLike(Long.valueOf(pic.getId()));
+                }
+            }
+        });
+
 
     }
 
@@ -161,6 +215,7 @@ public class ActivityDetail extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         tryGetComments(Long.valueOf(pic.getId()),null);
+        tryGetIsLike(Long.valueOf(pic.getId()));
     }
 
     @Override
@@ -182,8 +237,24 @@ public class ActivityDetail extends AppCompatActivity {
                 case msg_update:
                     Log.e("GGG","更新完毕1");
                     Log.e("GGG",(lastVisibleItem+1)+" "+commentList.size());
-                    commentsAdapter.notifyItemRangeChanged(lastVisibleItem+1,commentList.size()-1);
+                    if(commentList.size()==1){
+                        commentsAdapter.notifyDataSetChanged();
+                    }else{
+                        commentsAdapter.notifyItemRangeChanged(lastVisibleItem+1,commentList.size()-1);
+                    }
+                    tv_commentsnum.setText(commentList.size()+"");
+
                     swipeRefreshLayout.setRefreshing(false);
+                    if(FragmentLook.picList!=null){
+                        for(int i=0;i<FragmentLook.picList.size();i++){
+                            Pic pic1=FragmentLook.picList.get(i);
+                            if(pic1.getId()==pic.getId()){
+                                pic1.setCommentsnum(Long.valueOf(commentList.size()));
+                            }
+                        }
+                    }
+
+
                     Log.e("GGG","更新完毕2");
                     Toast.makeText(getApplicationContext(), "获取评论成功！", Toast.LENGTH_SHORT).show();
                     break;
@@ -194,7 +265,39 @@ public class ActivityDetail extends AppCompatActivity {
                 case msg_make:
                     commentsAdapter.notifyItemRangeChanged(0,commentList.size()-1);
                     swipeRefreshLayout.setRefreshing(false);
+                    tv_commentsnum.setText(commentList.size()+"");
                     Toast.makeText(getApplicationContext(), "发表评论成功！", Toast.LENGTH_SHORT).show();
+
+                    break;
+                case msg_getIsLike:
+                    Log.e("GGG","获取是否喜欢:"+isLike);
+                    if(isLike){
+                        iv_like.setImageDrawable(getDrawable(R.drawable.ic_like));
+                    }else{
+                        iv_like.setImageDrawable(getDrawable(R.drawable.ic_like_un));
+                    }
+                    break;
+                case msg_sendIsLike:
+                    Log.e("GGG","发送是否喜欢:"+isLike);
+                    if(isLike){
+                        iv_like.setImageDrawable(getDrawable(R.drawable.ic_like));
+                    }else{
+                        iv_like.setImageDrawable(getDrawable(R.drawable.ic_like_un));
+                    }
+
+                    if(FragmentLook.picList!=null){
+                        for(int i=0;i<FragmentLook.picList.size();i++){
+                            Pic pic1=FragmentLook.picList.get(i);
+                            if(pic1.getId()==pic.getId()){
+                                if(isLike){
+                                    pic1.setLikes(pic1.getLikes()+1);
+                                }else{
+                                    pic1.setLikes(pic1.getLikes()-1);
+                                }
+                            }
+                        }
+                    }
+
                     break;
             }
         }
@@ -350,4 +453,86 @@ public class ActivityDetail extends AppCompatActivity {
             }
         });
     }
+
+
+    /**
+     * 获取是否喜欢
+     */
+    public void tryGetIsLike(Long fileid){
+        SharedPreferences preferences=getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
+        Long  account=preferences.getLong(ConstValue.spAccount,-1l);
+        String pwd=preferences.getString(ConstValue.spPassword,"null");
+        String address=ConstValue.url_getIsLike(account,fileid);
+        HttpUtil.sendOkHttpRequest(address, new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Message msg = new Message();
+                msg.what=msg_noInternet;
+                loading=false;
+                handler.sendMessage(msg);
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+
+                Log.e("GGG",responseText);
+
+                try {
+                    Like like= new Gson().fromJson(responseText,Like.class);
+                    isLike=like.getIsLike();
+                    hasGetIsLike=true;
+                    Message msg = new Message();
+                    msg.what=msg_getIsLike;
+                    handler.sendMessage(msg);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+
+    /**
+     * 获取是否喜欢
+     */
+    public void trySendIsLike(Long fileid){
+        SharedPreferences preferences=getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
+        Long  account=preferences.getLong(ConstValue.spAccount,-1l);
+        String pwd=preferences.getString(ConstValue.spPassword,"null");
+        String address=ConstValue.url_sendIsLike(account,fileid,pwd,isLike);
+        HttpUtil.sendOkHttpRequest(address, new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Message msg = new Message();
+                msg.what=msg_noInternet;
+                loading=false;
+                handler.sendMessage(msg);
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+
+                Log.e("GGG",responseText);
+
+                try {
+                    Like like= new Gson().fromJson(responseText,Like.class);
+                    isLike=like.getIsLike();
+                    hasGetIsLike=true;
+                    Message msg = new Message();
+                    msg.what=msg_sendIsLike;
+                    handler.sendMessage(msg);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+
 }

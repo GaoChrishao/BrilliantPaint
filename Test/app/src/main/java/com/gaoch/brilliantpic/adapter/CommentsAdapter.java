@@ -91,6 +91,21 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         viewHolder.username.setTag(i);
 
 
+        viewHolder.username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onClick(viewHolder,i);
+            }
+        });
+
+        viewHolder.userpic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onClick(viewHolder,i);
+            }
+        });
+
+
 //        if(i==0){
 //            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //            layoutParams.setMargins(0,Utility.dp2px(mcontext,110),0,0);//4个参数按顺序分别是左上右下

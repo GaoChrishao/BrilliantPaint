@@ -22,8 +22,8 @@ public class LikeService {
         if(user ==null)return new Like();
         Like like=getLike(fileid,account);
         if(like!=null&&like.getIsLike()!=isLike){
-            updateLike(fileid,account,isLike);
             System.out.println("更新");
+            updateLike(fileid,account,isLike);
         }else if(like!=null&&like.getIsLike()==isLike){
             //重复操作
             System.out.println("重复");
@@ -38,6 +38,9 @@ public class LikeService {
         Pic pic=getPic(fileid);
         updateUserLikes(pic.getAccount(),isLike);
 
+        System.out.println("更新文件的喜欢");
+        updatePicLikes(fileid,isLike);
+
         System.out.println("更新收到赞的用户经验");
         addExp(pic.getAccount(),isLike,ConstValue.exp_likes);
 
@@ -47,6 +50,21 @@ public class LikeService {
     }
 
 
+    /**
+     * 查询Likes
+     * @param fileid
+     * @return
+     */
+    public Like getIsLike(Long fileid,Long account) {
+       Like like=getLike(fileid,account);
+       if(like!=null)return like;
+       like=new Like();
+       return like;
+    }
+
+
+
+
 
 
     /**
@@ -54,7 +72,7 @@ public class LikeService {
      * @param fileid
      * @return
      */
-    public Like getLike(Long fileid,Long account) {
+    private Like getLike(Long fileid,Long account) {
         List<Like> result = jdbcTemplate.query("select * from likes where account = ? and fileid=?", new Object[] {
                 account,fileid }, new BeanPropertyRowMapper(Like.class));
         if (result == null || result.isEmpty()) {
@@ -69,7 +87,7 @@ public class LikeService {
      * @param fileid
      * @return
      */
-    public void updateLike(Long fileid,Long account,Boolean isLike) {
+    private void updateLike(Long fileid,Long account,Boolean isLike) {
         jdbcTemplate.update("update likes set isLike=? where account = ? and fileid=?",new Object[]{isLike,account,fileid});
     }
 

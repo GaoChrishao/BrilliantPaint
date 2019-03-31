@@ -1,39 +1,38 @@
 package com.gaoch.brilliantpic.myclass;
 
 import java.io.Serializable;
+import java.util.List;
 
 import androidx.annotation.Keep;
 
-/**
- * 实体类
- */
+
 @Keep
-public class User implements Serializable {
+public class BasicUserInfo implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Long id;
     private Long account;
     private String username;
-    private String password;
-    private int exp;
     private String userpic;
+    private int exp;
     private int likes;
     private int commentsnum;
 
-    public User() {
-        id= Long.valueOf(0);
-        account= Long.valueOf(0);
-        username="";
-        password="";
+
+    List<Pic> picList;
+
+    public BasicUserInfo(){
+       account=-1l;
+    }
+
+    public void convertUser(User user){
+        this.account=user.getAccount();
+        this.exp=user.getExp();
+        this.likes=user.getLikes();
+        this.commentsnum =user.getCommentsnum();
+        this.username=user.getUsername();
+        this.userpic=user.getUserpic();
     }
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getAccount() {
         return account;
@@ -51,12 +50,12 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUserpic() {
+        return userpic;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserpic(String userpic) {
+        this.userpic = userpic;
     }
 
     public int getExp() {
@@ -65,14 +64,6 @@ public class User implements Serializable {
 
     public void setExp(int exp) {
         this.exp = exp;
-    }
-
-    public String getUserpic() {
-        return userpic;
-    }
-
-    public void setUserpic(String userpic) {
-        this.userpic = userpic;
     }
 
     public int getLikes() {
@@ -89,5 +80,15 @@ public class User implements Serializable {
 
     public void setCommentsnum(int commentsnum) {
         this.commentsnum = commentsnum;
+    }
+
+
+
+    public List<Pic> getPicList() {
+        return picList;
+    }
+
+    public void setPicList(List<Pic> picList) {
+        this.picList = picList;
     }
 }

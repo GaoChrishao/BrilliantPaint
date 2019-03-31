@@ -19,6 +19,7 @@
         app:civ_border_color="#B0FFFFFF"
         app:civ_border_width="1dp"
         android:src="@drawable/user_pic"
+        android:transitionName="@string/s_userPic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,6 +32,7 @@
         android:text="用户名"
         android:textColor="@color/colorTitle"
         android:textSize="16sp"
+        android:transitionName="@string/s_userName"
         app:layout_constraintStart_toEndOf="@+id/comment_userpic"
         app:layout_constraintTop_toTopOf="@+id/comment_userpic" />
 

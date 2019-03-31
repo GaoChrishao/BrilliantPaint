@@ -1,6 +1,12 @@
-package MyServer.bean;
+package com.gaoch.brilliantpic.myclass;
 
-public class Like {
+import java.io.Serializable;
+
+import androidx.annotation.Keep;
+
+@Keep
+public class Like implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private Long fileid;
     private Long account;
@@ -9,9 +15,7 @@ public class Like {
 
     public Like(){
         id=-1l;
-        isLike=false;
     }
-
 
     public Long getId() {
         return id;

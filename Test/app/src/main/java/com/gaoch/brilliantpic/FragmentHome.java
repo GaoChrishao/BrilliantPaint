@@ -74,7 +74,7 @@ public class FragmentHome extends Fragment {
         View view = inflater.inflate(R.layout.layout_home,container,false);
 
         circleImageView=view.findViewById(R.id.fragment_main_user_pic);
-        exp=view.findViewById(R.id.fragment_main_exp);
+        exp=view.findViewById(R.id.userinfo_exp);
         tv_name=view.findViewById(R.id.fragment_main_tv_name);
         tv_exp=view.findViewById(R.id.fragment_main_tv_exp);
 

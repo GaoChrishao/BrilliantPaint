@@ -14,6 +14,8 @@ public class Pic implements Serializable {
     private String picname;
     private Long time;
     private String userpic;
+    private Long likes;
+    private Long commentsnum;
 
 
     public Pic() {
@@ -73,5 +75,23 @@ public class Pic implements Serializable {
 
     public void setUserpic(String userpic) {
         this.userpic = userpic;
+    }
+
+    public Long getLikes() {
+        if(likes==null)likes=0l;
+        return likes;
+    }
+
+    public void setLikes(Long likes) {
+        this.likes = likes;
+    }
+
+    public Long getCommentsnum() {
+        if(commentsnum==null)commentsnum=0l;
+        return commentsnum;
+    }
+
+    public void setCommentsnum(Long commentsnum) {
+        this.commentsnum = commentsnum;
     }
 }

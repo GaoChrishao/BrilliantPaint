@@ -44,6 +44,20 @@ public class LikeController {
     }
 
 
+    @RequestMapping(value = "/getIsLike")
+    public Like getIsLike(
+            @RequestParam(value="account",required=true) Long account,
+            @RequestParam(value="fileid",required=true) Long fileid
+    ){
+        try {
+            return likeService.getIsLike(fileid,account);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Like();
+        }
+    }
+
+
 
 
 
