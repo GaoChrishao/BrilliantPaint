@@ -91,7 +91,7 @@ public class ActivityDetail extends AppCompatActivity {
                 tv_detail.setText(pic.getStylename());
                 RequestOptions options1 = new RequestOptions().centerCrop();
                 RequestOptions options2 = new RequestOptions().centerCrop().dontAnimate();
-                //RequestOptions options = new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(this,25))).error(R.drawable.background_allfround).placeholder(R.drawable.background_allfround);
+                //RequestOptions options = new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(this,25))).error(R.drawable.background_all_round).placeholder(R.drawable.background_all_round);
                 Glide.with(this).load(ConstValue.url_picAfter(pic.getPicname())).apply(options1).into(iv_pic);
                 if(!pic.getUserpic().equals("null")){
                     Glide.with(this).load(ConstValue.url_picUser(pic.getUserpic())).apply(options2).into(cv_user);
@@ -165,7 +165,7 @@ public class ActivityDetail extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        RequestOptions options = new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(this,25))).error(R.drawable.background_allfround).placeholder(R.drawable.background_allfround);
+        RequestOptions options = new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(this,25))).error(R.drawable.background_all_round).placeholder(R.drawable.background_all_round);
         Glide.with(this).load(ConstValue.url_picAfter(pic.getPicname())).apply(options).into(iv_pic);
         layout.setBackground(getResources().getDrawable(R.drawable.background_halfround));
         super.onBackPressed();

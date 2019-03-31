@@ -11,6 +11,8 @@ public class Pic {
     private String picname;
     private Long time;
     private String userpic;
+    private Long likes;
+    private Long commentsnum;
 
 
     public Pic() {
@@ -27,6 +29,22 @@ public class Pic {
 
     public Long getAccount() {
         return account;
+    }
+
+    public Long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Long likes) {
+        this.likes = likes;
+    }
+
+    public Long getCommentsnum() {
+        return commentsnum;
+    }
+
+    public void setCommentsnum(Long commentsnum) {
+        this.commentsnum = commentsnum;
     }
 
     public void setAccount(Long account) {

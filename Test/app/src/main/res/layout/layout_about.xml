@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorTitle"
-            android:text="易继斌"
+            android:text="易纪斌"
             android:layout_marginLeft="15dp"
             />
 

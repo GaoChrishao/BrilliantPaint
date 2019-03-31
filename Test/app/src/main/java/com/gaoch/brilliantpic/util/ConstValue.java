@@ -107,6 +107,10 @@ public class ConstValue {
     public static final String spExp ="sp_exp";
 
 
+    //经验相关
+    public static final int expLevel=10;
+
+
     //毛玻璃效果参数,可以动态修改
     public static int RoundCorner=50;
     public static int radius=10;

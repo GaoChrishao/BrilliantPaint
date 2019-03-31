@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.gaoch.brilliantpic.util.ConstValue;
@@ -36,6 +37,8 @@ public class ActivityStart extends Activity {
     private Boolean animationReady=false;
     private final int requestPermissionsCode = 100;//权限请求码
 
+    private ImageView iv_1,iv_2,iv_3,iv_4,iv_5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,11 +52,31 @@ public class ActivityStart extends Activity {
         initializeListeners();
         requestPermissons();
 
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        iv_1.setImageDrawable(Utility.ReSizePic(getResources().getDrawable(R.drawable.welcome1),iv_1.getHeight(),iv_1.getWidth(),getApplicationContext()));
+//        iv_2.setImageDrawable(Utility.ReSizePic(getResources().getDrawable(R.drawable.welcome2),iv_2.getHeight(),iv_2.getWidth(),getApplicationContext()));
+//        iv_3.setImageDrawable(Utility.ReSizePic(getResources().getDrawable(R.drawable.welcome3),iv_3.getHeight(),iv_3.getWidth(),getApplicationContext()));
+//
+
     }
 
     private void initView(){
         coordinatorLayout = findViewById(R.id.coordinator);
-        coordinatorLayout.addPage(R.layout.welcome1,R.layout.welcome2,R.layout.welcome3);
+        coordinatorLayout.addPage(R.layout.welcome1,R.layout.welcome2,R.layout.welcome3,R.layout.welcome4,R.layout.welcome5);
+
+        iv_1=findViewById(R.id.welcome1_iv);
+        iv_2=findViewById(R.id.welcome2_iv);
+        iv_3=findViewById(R.id.welcome3_iv);
+        iv_4=findViewById(R.id.welcome4_iv);
+
+
+
 
         btn_start=findViewById(R.id.as_btn_1);
         btn_start.setOnClickListener(new View.OnClickListener() {
@@ -71,15 +94,24 @@ public class ActivityStart extends Activity {
         SharedPreferences preferences = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
         boolean hasOpen=preferences.getBoolean(ConstValue.hasOpen,false);
         String account=String.valueOf(preferences.getLong(ConstValue.spAccount,-1));
-        if(hasOpen&&account.length()>1){
+        if(hasOpen&&account.length()>2){
             Intent intent = new Intent(getApplicationContext(),ActivityMain.class);
             startActivity(intent);
             finish();
-        }else if(hasOpen&account.length()<=1){
+        }else if(hasOpen&account.length()<=2){
             Intent intent = new Intent(getApplicationContext(),ActivityLogin.class);
             startActivity(intent);
             finish();
+        }else{
+            iv_1.setImageDrawable(getResources().getDrawable(R.drawable.welcome1,null));
+            iv_2.setImageDrawable(getResources().getDrawable(R.drawable.welcome2,null));
+            iv_3.setImageDrawable(getResources().getDrawable(R.drawable.welcome4,null));
+            iv_4.setImageDrawable(getResources().getDrawable(R.drawable.welcome3,null));
         }
+
+
+
+
     }
 
     private void initializeListeners() {
@@ -106,7 +138,9 @@ public class ActivityStart extends Activity {
         final int colorPage1 = ResourcesCompat.getColor(resources, R.color.color1, getTheme());
         final int colorPage2 = ResourcesCompat.getColor(resources, R.color.color2, getTheme());
         final int colorPage3 = ResourcesCompat.getColor(resources, R.color.color3, getTheme());
-        backgroundAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), colorPage1, colorPage2, colorPage3);
+        final int colorPage4 = ResourcesCompat.getColor(resources, R.color.color4, getTheme());
+        final int colorPage5 = ResourcesCompat.getColor(resources, R.color.color5, getTheme());
+        backgroundAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), colorPage1, colorPage2, colorPage3,colorPage4,colorPage5);
         backgroundAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

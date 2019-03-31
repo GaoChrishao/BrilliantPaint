@@ -61,7 +61,7 @@ public class ChoseMakeAdapter extends RecyclerView.Adapter<ChoseMakeAdapter.View
                 }
             });
         }
-        RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.background_allfround).error(R.drawable.background_allfround);
+        RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.background_all_round).error(R.drawable.background_all_round);
         Glide.with(mcontext).load(styleList.get(i).getPicurl()).apply(options).into(viewHolder.imageView);
         //Log.e("GGG",styleList.get(i).getPicurl());
         if(checkList.get(i)){

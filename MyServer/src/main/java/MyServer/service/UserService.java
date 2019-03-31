@@ -2,6 +2,8 @@ package MyServer.service;
 
 import MyServer.ConstValue;
 import MyServer.MyClass.Util;
+import MyServer.bean.BasicUserInfo;
+import MyServer.bean.Pic;
 import MyServer.bean.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -188,6 +190,34 @@ public class UserService {
         }
         return result.get(0);
     }
+
+
+    /**
+     * 查询基本用户信息
+     * @param account
+     * @return
+     */
+    public BasicUserInfo getBasicInfo(String account) {
+        List<User> result = jdbcTemplate.query("select * from userinfo where account = ?", new Object[] {
+                account }, new BeanPropertyRowMapper(User.class));
+        if (result == null || result.isEmpty()) {
+            return null;
+        }
+        BasicUserInfo basicUserInfo=new BasicUserInfo();
+        basicUserInfo.convertUser(result.get(0));
+        List<Pic> picList = jdbcTemplate.query("select * from userfile where account=?", new Object[] {
+                account }, new BeanPropertyRowMapper(Pic.class));
+        for(int i=0;i<picList.size();i++){
+            picList.get(i).setUserpic(basicUserInfo.getUserpic());
+        }
+        basicUserInfo.setPicList(picList);
+
+
+        return basicUserInfo;
+    }
+
+
+
 
 
     /**

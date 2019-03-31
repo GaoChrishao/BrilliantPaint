@@ -11,6 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +46,8 @@ public class ActivityVideo extends AppCompatActivity {
     // 相册选择回传吗
     public final static int REQUEST_PICK_PICS = 12;
     public final static int REQUEST_PICK_MUSIC = 13;
+
+    private final int finishVideo=11;
 
 
     private Button btn_chosePics,btn_choseMusic;
@@ -203,7 +207,7 @@ public class ActivityVideo extends AppCompatActivity {
                         AndroidSequenceEncoder encoder = new AndroidSequenceEncoder(out, Rational.R(ConstValue.video_fps, ConstValue.video_den));
                         int size=picPathList.size();
                         for(int i=0;i<size;i++){
-                            Bitmap bitmap=getBitmap(picPathList.get(i), Color.WHITE);
+                            Bitmap bitmap=getBitmap(picPathList.get(i), Color.BLACK);
                             for(int j=0;j<ConstValue.video_fps;j++){
                                 encoder.encodeImage(bitmap);
                                 publishProgress((int)((i*ConstValue.video_fps+j+1.0)/(size*ConstValue.video_fps)*100));
@@ -255,9 +259,7 @@ public class ActivityVideo extends AppCompatActivity {
                             progressDialog=null;
                         }
 
-                        btn_choseMusic.setVisibility(View.VISIBLE);
-                        btn_chosePics.setVisibility(View.VISIBLE);
-
+                        handler.sendEmptyMessage(finishVideo);
                         File preFile=new File(videoPath);
                         if(preFile.exists()){
                             preFile.delete();
@@ -322,6 +324,22 @@ public class ActivityVideo extends AppCompatActivity {
 
         }
     }
+
+
+    Handler handler = new Handler(){
+
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case finishVideo:
+                    btn_choseMusic.setVisibility(View.VISIBLE);
+                    btn_chosePics.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+    };
 
 
 

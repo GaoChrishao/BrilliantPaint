@@ -1,0 +1,11 @@
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorPrimary">
+    <item
+        android:drawable="@drawable/shape_login">
+    </item>
+    <item
+        android:id="@android:id/mask"
+        android:drawable="@drawable/shape_login">
+    </item>
+
+</ripple>

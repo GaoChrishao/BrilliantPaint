@@ -41,7 +41,7 @@ public class ShowPicAdapter extends RecyclerView.Adapter<ShowPicAdapter.ViewHold
         this.mcontext=context;
         this.picList = picList;
         options = new RequestOptions();
-        options.transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(context,25))).placeholder(R.drawable.background_allfround);
+        options.transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(context,25))).placeholder(R.drawable.background_all_round);
     }
 
 

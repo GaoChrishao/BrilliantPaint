@@ -40,7 +40,7 @@ public class CommentService {
 
 
     /**
-     * 更新用户信息
+     * 更新用户评论条数
      * @param account
      * @return
      * @throws Exception
@@ -58,6 +58,8 @@ public class CommentService {
     public void updatePicComments(Long fileid) throws Exception {
         jdbcTemplate.update("update userfile set commentsnum=commentsnum+1 where id = ?",fileid);
     }
+
+
 
 
     /**

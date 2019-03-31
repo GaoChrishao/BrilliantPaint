@@ -16,11 +16,12 @@
     <color name="colorChoseLines">#95C2EDF3</color>
     <color name="colorUnChoseLines">#00FFFFFF</color>
 
-    <color name="color1">#388e3c</color>
+    <color name="color1">#79C77C</color>
     <color name="color2">#ABDFD9</color>
-    <color name="color3">#00acc1</color>
-    <color name="color4">#0288d1</color>
-    <color name="color5">#1976d2</color>
+    <color name="color3">#72D3DF</color>
+    <color name="color4">#579EC9</color>
+    <color name="color5">#2E84D6</color>
+    <color name="color6">#1976d2</color>
 
 
 

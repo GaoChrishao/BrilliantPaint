@@ -101,16 +101,26 @@ public class FragmentHome extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        exp.setAngle(180);
+
         tv_name.setText(getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUsername,"妙笔生画"));
-        int exp= getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getInt(ConstValue.spExp,0);
-        int exp_1=exp;
+        int expAll= getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getInt(ConstValue.spExp,0);
+        int exp_index=expAll;
         int level=0;
-        while (exp_1>0){
-            exp_1=exp_1/10;
+        int thisLevelExp=1;
+        while (exp_index>thisLevelExp){
+            exp_index-=thisLevelExp;
             level++;
+            thisLevelExp*=ConstValue.expLevel;
         }
+
+        int angle=(int)((exp_index+0.0)/thisLevelExp*360);
+        exp.setAngle(angle+90);
         tv_exp.setText("Lv."+level);
+
+        Log.e("GGG","all:"+expAll+" expIndex:"+exp_index+" thisLEvelNEdd:"+thisLevelExp+"  engle:"+angle);
+
+
+
         String userpicname=getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUserPic,"");
         RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop().dontAnimate();
         if(!userpicname.equals("")){
@@ -282,13 +292,20 @@ public class FragmentHome extends Fragment {
                     editor.putString(ConstValue.spUserPic,user.getUserpic());
                     editor.apply();
                     tv_name.setText(user.getUsername());
-                    int exp= user.getExp();
+
+                    int expAll= user.getExp();
+                    int exp_index=expAll;
                     int level=0;
-                    while (exp>0){
-                        exp=exp/10;
+                    int thisLevelExp=1;
+                    while (exp_index>thisLevelExp){
+                        exp_index-=thisLevelExp;
                         level++;
+                        thisLevelExp*=ConstValue.expLevel;
                     }
+                    exp.setAngle((int)((exp_index+0.0)/thisLevelExp*360)+90);
                     tv_exp.setText("Lv."+level);
+
+
 
                     break;
                 case msg_close:

@@ -5,14 +5,19 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.gaoch.brilliantpic.R;
+import com.gaoch.brilliantpic.util.Utility;
+
+import androidx.annotation.Nullable;
 
 public class ViewDialogFragment extends DialogFragment {
         private ClickShare clickShare;
@@ -24,7 +29,17 @@ public class ViewDialogFragment extends DialogFragment {
             show(fragmentManager, "ViewDialogFragment");
         }
 
-        @Override
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+            getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            getDialog().getWindow().setLayout(Utility.dp2px(getContext(),200),Utility.dp2px(getContext(),150));
+
+            return super.onCreateView(inflater, container, savedInstanceState);
+
+    }
+
+    @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -47,6 +62,9 @@ public class ViewDialogFragment extends DialogFragment {
                     dismiss();
                 }
             });
+
+
+
             return builder.create();
         }
 

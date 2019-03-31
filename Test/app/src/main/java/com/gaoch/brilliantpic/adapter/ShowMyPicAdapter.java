@@ -40,7 +40,7 @@ public class ShowMyPicAdapter extends RecyclerView.Adapter<ShowMyPicAdapter.View
         this.picList = picList;
         this.window=window;
         options = new RequestOptions().centerCrop();
-        options.transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(context,25))).error(R.drawable.background_allfround).placeholder(R.drawable.background_allfround);
+        options.transforms(new CenterCrop(),new RoundedCorners(Utility.dp2px(context,25))).error(R.drawable.background_all_round).placeholder(R.drawable.background_all_round);
     }
 
 

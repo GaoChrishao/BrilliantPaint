@@ -10,6 +10,8 @@ public class User {
     private String password;
     private String userpic;
     private int exp;
+    private int likes;
+    private int commentsnum;
 
     public User() {
         id= Long.valueOf(0);
@@ -18,6 +20,22 @@ public class User {
         password="";
         userpic="";
 
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getCommentsnum() {
+        return commentsnum;
+    }
+
+    public void setCommentsnum(int commentsnum) {
+        this.commentsnum = commentsnum;
     }
 
     public Long getId() {

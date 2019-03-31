@@ -1,6 +1,7 @@
 package MyServer.Controller;
 
 
+import MyServer.bean.BasicUserInfo;
 import MyServer.bean.FileMessage;
 import MyServer.bean.User;
 import MyServer.service.UserService;
@@ -46,6 +47,15 @@ public class UserController {
             @RequestParam(value="username",required=true) String username) throws Exception {
         System.out.println("更新操作,account:"+account+" password:"+password+" username:"+username);
         return userService.update(Long.valueOf(account),password,username);
+    }
+
+
+
+    @RequestMapping(value = "/getBasic")
+    public BasicUserInfo getBasic(
+            @RequestParam(value="account",required=true) String account)throws Exception {
+
+        return userService.getBasicInfo(account);
     }
 
 

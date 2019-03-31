@@ -25,4 +25,5 @@ public class ConstValue {
 
     public static final int exp_processpic=10;
     public static final int exp_comments=10;
+    public static final int exp_likes=2;
 }

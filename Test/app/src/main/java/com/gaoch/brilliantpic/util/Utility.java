@@ -1,7 +1,6 @@
 package com.gaoch.brilliantpic.util;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,7 +25,6 @@ import com.gaoch.brilliantpic.myclass.User;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -107,6 +105,40 @@ public class Utility {
      */
     public static Drawable ReSizePic(Bitmap bitmap,int maxHeight,int maxWidth,Context context){
         Bitmap bkg1=bitmap;
+        float prePicWidth=bkg1.getWidth();
+        float prePicHeight=bkg1.getHeight();
+        double displayScale=(maxWidth+0.0)/maxHeight;
+        double prePicScale=prePicWidth/prePicHeight;
+        Log.e("GGG","显示区域:"+maxHeight+","+maxWidth);
+        Log.e("GGG","图片尺寸:"+prePicHeight+","+prePicWidth);
+        Log.e("GGG","显示区域比例:"+displayScale);
+        Log.e("GGG","图片比例:"+prePicScale);
+        if(prePicScale>displayScale){
+            //图片宽度过大,将宽度放大到maxWidth
+            float scaleFactor=maxWidth/prePicWidth;
+            //按照高度缩放
+            Log.e("GGG","缩放后的图片:"+(int)(prePicWidth*scaleFactor)+","+(int)(prePicHeight*scaleFactor));
+            Bitmap bkg_scaled= Bitmap.createScaledBitmap(bkg1,(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
+            return new BitmapDrawable(context.getResources(),bkg_scaled);
+
+
+        }else{
+            //背景图片长度过大，将长度放大到maxHeight
+            float scaleFactor=maxHeight/prePicHeight;
+            //按照宽度缩放
+            Log.e("GGG","缩放后的图片:"+(int)(prePicWidth*scaleFactor)+","+(int)(prePicHeight*scaleFactor));
+            Bitmap bkg_scaled= Bitmap.createScaledBitmap(bkg1,(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
+            return new BitmapDrawable(context.getResources(),bkg_scaled);
+        }
+    }
+
+    /**
+     * 按照最大范围来放大图片
+     * @param drawable
+     * @return
+     */
+    public static Drawable ReSizePic(Drawable drawable,int maxHeight,int maxWidth,Context context){
+        Bitmap bkg1=((BitmapDrawable)drawable).getBitmap();
         float prePicWidth=bkg1.getWidth();
         float prePicHeight=bkg1.getHeight();
         double displayScale=(maxWidth+0.0)/maxHeight;
@@ -509,62 +541,13 @@ public class Utility {
         return user;
     }
 
-    /**
-     * 保存文件
-     * @param dis
-     * @return  本地文件的绝对路径
-     */
-    public static String downloadFile(DataInputStream dis, String fileName)throws Exception {
-        Log.e("GGG","开始下载文件");
-        File file = new File(ConstValue.picPath +fileName);
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        FileOutputStream fps = null;
-        fps = new FileOutputStream(file);
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-        int length = -1;
-
-        while ((length = dis.read(buffer)) != -1) {
-            fps.write(buffer, 0, length);
-        }
-        fps.flush();
-        fps.close();
-        return ConstValue.picPath +fileName;
-    }
-
 
     //判断字符串是否为整数
     public static boolean isInteger(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
         return pattern.matcher(str).matches();
     }
-    /**
-     * 显示进度对话框
-     */
-    public static void showProgressDialog(ProgressDialog progressDialog, Context context, String msg){
-        if(progressDialog==null){
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage(msg);
-            //progressDialog.setCanceledOnTouchOutside(false);
-        }
-        Log.e("GGG","显示");
-        progressDialog.show();
-    }
 
-
-    /**
-     * 关闭进度对话框
-     */
-    public static void closeProgressDialog(ProgressDialog progressDialog){
-        Log.e("GGG","关闭");
-        if(progressDialog!=null){
-            progressDialog.dismiss();
-            progressDialog=null;
-            Log.e("GGG","关闭成功");
-        }
-    }
 
 
     public static int getStatusBarHeight(Context context) {

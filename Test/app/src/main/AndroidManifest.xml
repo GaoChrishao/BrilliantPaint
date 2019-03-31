@@ -16,9 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme">
-        <activity android:name=".ActivityVideo">
-
-        </activity>
+        <activity android:name=".ActivityUserInfo"></activity>
+        <activity android:name=".ActivityVideo"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -44,7 +43,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ActivityMain"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ActivityLogin"
             android:screenOrientation="portrait" />
