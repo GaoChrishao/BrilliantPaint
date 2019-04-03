@@ -141,6 +141,27 @@ public class ActivityDetail extends AppCompatActivity {
 
             }
         });
+        iv_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BasicUserInfo basicUserInfo=new BasicUserInfo();
+                basicUserInfo.setAccount(pic.getAccount());
+                basicUserInfo.setUserpic(pic.getUserpic());
+                basicUserInfo.setUsername(pic.getUsername());
+                Intent intent1=new Intent(ActivityDetail.this,ActivityUserInfo.class);
+
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityDetail.this,
+
+                        new Pair<View, String>(tv_username,getResources().getString(R.string.s_userName)),
+                        new Pair<View, String>(cv_user,getResources().getString(R.string.s_userPic))
+
+                ).toBundle();
+                intent1.putExtra(ConstValue.bundle_user,basicUserInfo);
+                startActivity(intent1,bundle);
+            }
+        });
+
+
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setAdapter(commentsAdapter);
@@ -226,6 +247,10 @@ public class ActivityDetail extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     Handler handler=new Handler(){
         @Override
@@ -256,17 +281,19 @@ public class ActivityDetail extends AppCompatActivity {
 
 
                     Log.e("GGG","更新完毕2");
-                    Toast.makeText(getApplicationContext(), "获取评论成功！", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "获取评论成功！", Toast.LENGTH_SHORT).show();
                     break;
                 case msg_nomore:
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getApplicationContext(), "无评论!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "无评论!", Toast.LENGTH_SHORT).show();
                     break;
                 case msg_make:
                     commentsAdapter.notifyItemRangeChanged(0,commentList.size()-1);
                     swipeRefreshLayout.setRefreshing(false);
                     tv_commentsnum.setText(commentList.size()+"");
-                    Toast.makeText(getApplicationContext(), "发表评论成功！", Toast.LENGTH_SHORT).show();
+                    if(getApplicationContext()!=null){
+                        Toast.makeText(getApplicationContext(), "发表评论成功！", Toast.LENGTH_SHORT).show();
+                    }
 
                     break;
                 case msg_getIsLike:
@@ -308,7 +335,7 @@ public class ActivityDetail extends AppCompatActivity {
      */
     public void tryGetComments(Long fileid,Long commentid){
         if(fileid==0){
-            Toast.makeText(this, "无数据!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "无数据!", Toast.LENGTH_SHORT).show();
             return;
         }
         if(loading==true)return;
@@ -383,7 +410,7 @@ public class ActivityDetail extends AppCompatActivity {
      */
     public void tryMakeComments(Long fileid,String content){
         if(fileid==0){
-            Toast.makeText(this, "无数据!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "无数据!", Toast.LENGTH_SHORT).show();
             return;
         }
         swipeRefreshLayout.setRefreshing(true);

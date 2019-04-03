@@ -202,16 +202,22 @@ public class FragmentLook extends Fragment {
             switch (msg.what){
                 case msg_noInternet:
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), "请检查网络连接！", Toast.LENGTH_SHORT).show();
+                    if(getContext()!=null){
+                        Toast.makeText(getContext(), "请检查网络连接！", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
                 case msg_update:
                     adapter.notifyItemRangeChanged(lastVisibleItem+1,picList.size());
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), "获取数据成功！", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "获取数据成功！", Toast.LENGTH_SHORT).show();
                     break;
                 case msg_nomore:
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), "无数据!", Toast.LENGTH_SHORT).show();
+                    if(getContext()!=null){
+                        Toast.makeText(getContext(), "无数据!", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
             }
         }

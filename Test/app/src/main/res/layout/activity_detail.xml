@@ -44,7 +44,9 @@
         app:civ_border_color="#B0FFFFFF"
         app:civ_border_width="3dp"
         app:layout_constraintBottom_toTopOf="@+id/detail_layout"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
 
     <TextView
         android:id="@+id/detail_showpic_userName"

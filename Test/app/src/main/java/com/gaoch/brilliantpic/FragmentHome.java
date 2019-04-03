@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.gaoch.brilliantpic.myclass.BasicUserInfo;
 import com.gaoch.brilliantpic.myclass.User;
 import com.gaoch.brilliantpic.myview.CircleExp;
 import com.gaoch.brilliantpic.util.Blur;
@@ -34,7 +35,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -121,7 +124,7 @@ public class FragmentHome extends Fragment {
 
 
 
-        String userpicname=getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUserPic,"");
+        final String userpicname=getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).getString(ConstValue.spUserPic,"");
         RequestOptions options = new RequestOptions().placeholder(R.drawable.user_pic).error(R.drawable.user_pic).centerCrop().dontAnimate();
         if(!userpicname.equals("")){
             Glide.with(getContext()).load(ConstValue.url_picUser(userpicname))
@@ -129,6 +132,27 @@ public class FragmentHome extends Fragment {
                     .into(circleImageView);
         }
         setBlur();
+
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BasicUserInfo basicUserInfo=new BasicUserInfo();
+                SharedPreferences preferences=getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
+                basicUserInfo.setAccount(preferences.getLong(ConstValue.spAccount,-1l));
+                basicUserInfo.setUserpic(preferences.getString(ConstValue.spUserPic,""));
+                basicUserInfo.setUsername(preferences.getString(ConstValue.spUsername,"未知"));
+                Intent intent1=new Intent(getActivity(),ActivityUserInfo.class);
+
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+
+                        new Pair<View, String>(tv_name,getResources().getString(R.string.s_userName)),
+                        new Pair<View, String>(circleImageView,getResources().getString(R.string.s_userPic))
+
+                ).toBundle();
+                intent1.putExtra(ConstValue.bundle_user,basicUserInfo);
+                startActivity(intent1,bundle);
+            }
+        });
 
         btn_camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,6 +263,7 @@ public class FragmentHome extends Fragment {
     }
 
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -284,7 +309,7 @@ public class FragmentHome extends Fragment {
                         return;
                     }
                     //Toast.makeText(getContext(), "欢迎回来："+user.getUsername(), Toast.LENGTH_SHORT).show();
-                    SharedPreferences.Editor editor = getContext().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = getActivity().getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
                     editor.putString(ConstValue.spUsername,user.getUsername());
                     editor.putString(ConstValue.spPassword,user.getPassword());
                     editor.putLong(ConstValue.spAccount,user.getAccount());

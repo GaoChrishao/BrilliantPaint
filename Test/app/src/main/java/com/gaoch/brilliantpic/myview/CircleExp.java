@@ -5,12 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.gaoch.brilliantpic.R;
+import com.gaoch.brilliantpic.util.Utility;
 
 public class CircleExp extends View {
     int angle=30;
+    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     public CircleExp(Context context) {
         super(context);
         mPaint.setColor(getResources().getColor(R.color.colorExp));
@@ -31,7 +35,6 @@ public class CircleExp extends View {
         mPaint.setColor(getResources().getColor(R.color.colorExp));
     }
 
-    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -47,6 +50,7 @@ public class CircleExp extends View {
     }
     public void setAngle(int angle){
         this.angle=angle;
+        invalidate();
 
     }
 
@@ -66,12 +70,15 @@ public class CircleExp extends View {
         switch (specMode) {
             case MeasureSpec.AT_MOST:
                 defaultWidth =  getPaddingLeft() + getPaddingRight();
+                Log.e("GGG","at_most:"+Utility.px2dp(getContext(),defaultWidth));
                 break;
             case MeasureSpec.EXACTLY:
                 defaultWidth = specSize;
+                Log.e("GGG","exactly:"+ Utility.px2dp(getContext(),defaultWidth));
                 break;
             case MeasureSpec.UNSPECIFIED:
                 defaultWidth = Math.max(defaultWidth, specSize);
+                Log.e("GGG","unspecified:"+Utility.px2dp(getContext(),defaultWidth));
         }
         return defaultWidth;
     }

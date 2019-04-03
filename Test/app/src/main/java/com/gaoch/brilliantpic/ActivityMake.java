@@ -32,6 +32,7 @@ import com.gaoch.brilliantpic.myclass.FileMessage;
 import com.gaoch.brilliantpic.myclass.Style;
 import com.gaoch.brilliantpic.myview.ShadowImageView;
 import com.gaoch.brilliantpic.myview.ViewDialogFragment;
+import com.gaoch.brilliantpic.util.Blur;
 import com.gaoch.brilliantpic.util.ConstValue;
 import com.gaoch.brilliantpic.util.Utility;
 
@@ -119,6 +120,12 @@ public class ActivityMake extends Activity {
         initData();
         setClickEvent();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Blur.destroy(layout_bkg);
     }
 
     void setClickEvent(){

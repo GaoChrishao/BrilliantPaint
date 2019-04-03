@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -429,5 +430,13 @@ public class Blur {
         }else{
             brightness=newBrightness;
         }
+    }
+
+    public static void destroy(View fromView){
+        if(bkgMaps.get(fromView)!=null){
+            bkgMaps.remove(fromView);
+            Log.e("GGG","释放缓存");
+        }
+
     }
 }

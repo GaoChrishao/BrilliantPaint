@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.gaoch.brilliantpic.util.ConstValue;
@@ -34,6 +36,7 @@ public class ActivityStart extends Activity {
     private Button btn_start;
     private ValueAnimator backgroundAnimator;
     private WelcomeCoordinatorLayout coordinatorLayout;
+    private LinearLayout layout;
     private Boolean animationReady=false;
     private final int requestPermissionsCode = 100;//权限请求码
 
@@ -59,50 +62,49 @@ public class ActivityStart extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-//        iv_1.setImageDrawable(Utility.ReSizePic(getResources().getDrawable(R.drawable.welcome1),iv_1.getHeight(),iv_1.getWidth(),getApplicationContext()));
-//        iv_2.setImageDrawable(Utility.ReSizePic(getResources().getDrawable(R.drawable.welcome2),iv_2.getHeight(),iv_2.getWidth(),getApplicationContext()));
-//        iv_3.setImageDrawable(Utility.ReSizePic(getResources().getDrawable(R.drawable.welcome3),iv_3.getHeight(),iv_3.getWidth(),getApplicationContext()));
-//
 
     }
 
     private void initView(){
+        layout=findViewById(R.id.start_ll);
         coordinatorLayout = findViewById(R.id.coordinator);
-        coordinatorLayout.addPage(R.layout.welcome1,R.layout.welcome2,R.layout.welcome3,R.layout.welcome4,R.layout.welcome5);
-
-        iv_1=findViewById(R.id.welcome1_iv);
-        iv_2=findViewById(R.id.welcome2_iv);
-        iv_3=findViewById(R.id.welcome3_iv);
-        iv_4=findViewById(R.id.welcome4_iv);
 
 
-
-
-        btn_start=findViewById(R.id.as_btn_1);
-        btn_start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences.Editor editor = getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
-                editor.putBoolean(ConstValue.hasOpen,true);
-                editor.apply();
-                Intent intent = new Intent(getApplicationContext(),ActivityLogin.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         SharedPreferences preferences = getSharedPreferences(ConstValue.sp,MODE_PRIVATE);
         boolean hasOpen=preferences.getBoolean(ConstValue.hasOpen,false);
         String account=String.valueOf(preferences.getLong(ConstValue.spAccount,-1));
         if(hasOpen&&account.length()>2){
-            Intent intent = new Intent(getApplicationContext(),ActivityMain.class);
-            startActivity(intent);
-            finish();
+            layout.setBackground(Utility.getCuteedBkg(getResources().getDrawable(R.drawable.bkg_start),this,getWindowManager()));
+            TaskIntentMain taskIntentMain=new TaskIntentMain();
+            taskIntentMain.execute();
+
         }else if(hasOpen&account.length()<=2){
-            Intent intent = new Intent(getApplicationContext(),ActivityLogin.class);
-            startActivity(intent);
-            finish();
+            layout.setBackground(Utility.getCuteedBkg(getResources().getDrawable(R.drawable.bkg_start),this,getWindowManager()));
+            TaskIntentLogin taskIntentLogin=new TaskIntentLogin();
+            taskIntentLogin.execute();
+
         }else{
+
+            coordinatorLayout.setVisibility(View.VISIBLE);
+            coordinatorLayout.addPage(R.layout.welcome1,R.layout.welcome2,R.layout.welcome3,R.layout.welcome4,R.layout.welcome5);
+            btn_start=findViewById(R.id.as_btn_1);
+            btn_start.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SharedPreferences.Editor editor = getSharedPreferences(ConstValue.sp,MODE_PRIVATE).edit();
+                    editor.putBoolean(ConstValue.hasOpen,true);
+                    editor.apply();
+                    Intent intent = new Intent(getApplicationContext(),ActivityLogin.class);
+                    startActivity(intent);
+                    //Log.e("GGG","跳转");
+                    finish();
+                }
+            });
+            iv_1=findViewById(R.id.welcome1_iv);
+            iv_2=findViewById(R.id.welcome2_iv);
+            iv_3=findViewById(R.id.welcome3_iv);
+            iv_4=findViewById(R.id.welcome4_iv);
             iv_1.setImageDrawable(getResources().getDrawable(R.drawable.welcome1,null));
             iv_2.setImageDrawable(getResources().getDrawable(R.drawable.welcome2,null));
             iv_3.setImageDrawable(getResources().getDrawable(R.drawable.welcome4,null));
@@ -149,6 +151,50 @@ public class ActivityStart extends Activity {
 
         });
 
+    }
+
+
+
+    class TaskIntentLogin extends AsyncTask<Void ,Integer ,Boolean  >{
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Thread.sleep(ConstValue.thread_sleep);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            Intent intent = new Intent(getApplicationContext(),ActivityLogin.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    class TaskIntentMain extends AsyncTask<Void ,Integer ,Boolean  >{
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                Thread.sleep(ConstValue.thread_sleep);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            Intent intent = new Intent(getApplicationContext(),ActivityMain.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
 

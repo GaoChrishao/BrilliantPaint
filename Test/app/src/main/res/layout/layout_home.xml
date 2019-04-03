@@ -47,7 +47,9 @@
                     android:src="@drawable/user_pic"
                     app:civ_border_color="#79ffffff"
                     app:civ_border_overlay="true"
-                    app:civ_border_width="1dp" />
+                    app:civ_border_width="1dp"
+                    android:transitionName="@string/s_userPic"
+                    />
             </RelativeLayout>
 
             <LinearLayout
@@ -65,7 +67,9 @@
                     android:layout_height="wrap_content"
                     android:text="妙笔生画"
                     android:textColor="@color/colorTitle"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:transitionName="@string/s_userName"
+                    />
 
                 <TextView
                     android:id="@+id/fragment_main_tv_exp"

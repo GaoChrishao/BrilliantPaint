@@ -6,7 +6,9 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import com.gaoch.brilliantpic.adapter.LocalDatabaseHelper;
 import com.gaoch.brilliantpic.util.Blur;
 import com.gaoch.brilliantpic.util.ConstValue;
 import com.gaoch.brilliantpic.util.HttpUtil;
+import com.gaoch.brilliantpic.util.ImageUtil;
 import com.gaoch.brilliantpic.util.Utility;
 import com.google.android.material.navigation.NavigationView;
 
@@ -63,8 +66,7 @@ public class ActivityMain extends Activity {
     private final int msg_getAllStyles=2;
     private final int msg_getAllMyPic=3;
     boolean hasOpen=false;
-
-
+    private int primaryColor=0;
 
 
     @Override
@@ -90,6 +92,7 @@ public class ActivityMain extends Activity {
         int height = metrics.heightPixels;
         if(bkgFile1.exists()&&bkgFile1.isFile()){
             Blur.initBkgWithResieze(layout_bkg,Utility.LoadLocalBitmap(ConstValue.getBkg_blurPath(getApplicationContext())),width,height);
+            primaryColor = ImageUtil.colorFromBitmap( BitmapFactory.decodeFile(ConstValue.getBkg_blurPath(getApplicationContext())));
         }
 
 
@@ -216,12 +219,20 @@ public class ActivityMain extends Activity {
         }
 
 
-//        Log.e("MainActivity",primaryColor+"");
-//        if(primaryColor!=0){
-//            LinearLayout layout = headerView.findViewById(R.id.nav_header);
-//            layout.setBackgroundColor(primaryColor);
-//        }
-//        Log.e("cloudbook","颜色:"+primaryColor);
+        Log.e("MainActivity",primaryColor+"");
+        if(primaryColor!=0){
+            LinearLayout layout = headerView.findViewById(R.id.nav_header);
+            layout.setBackground(Utility.getCuteedBkg(ConstValue.getBkg_blurPath(this),this,130,200));
+            int[] colors = new int[]{ primaryColor,getResources().getColor(R.color.uncheckedColor)};
+            int[][] states = new int[][]{
+                    new int[]{ android.R.attr.state_checked},
+                    new int[]{-android.R.attr.state_checked}
+            };
+            ColorStateList csl = new ColorStateList(states,colors);
+            navigationView.setItemIconTintList(csl);
+            navigationView.setItemTextColor(csl);
+        }
+
     }
 
     /**
@@ -285,7 +296,11 @@ public class ActivityMain extends Activity {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
                 System.out.println(responseText);
-                LocalDatabaseHelper.proUserfiles(responseText,dbHelper.getWritableDatabase());
+                if(!(responseText==null)&&!(responseText.length()<1)){
+                    LocalDatabaseHelper.proUserfiles(responseText,dbHelper.getWritableDatabase());
+                }
+
+
                 Message msg = new Message();
                 msg.what=msg_getAllMyPic;
                 handler.sendMessage(msg);

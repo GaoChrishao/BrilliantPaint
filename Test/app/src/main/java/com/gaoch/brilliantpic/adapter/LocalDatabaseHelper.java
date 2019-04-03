@@ -35,6 +35,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
             + "stylename varchar,"
             + "username varchar,"
             +"picname varchar,"
+            +"likes int,"
+            +"commentsnum int,"
             + "time timestamp)";
 
 
@@ -58,7 +60,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
             oldVersion++;
         }
 
-        if(oldVersion == INITIAL_VERSION &&newVersion==3){
+        if(oldVersion == 2 &&newVersion==3){
             db.execSQL("alter table userfiles add column likes int default 0");
             db.execSQL("alter table userfiles add column commentsnum int default 0");
         }
@@ -97,9 +99,6 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     value.put("name",jsonObject.getString("name"));
                     value.put("modelname",jsonObject.getString("modelname"));
                     value.put("picurl",jsonObject.getString("picurl"));
-                    value.put("likes",jsonObject.getString("likes"));
-                    value.put("commentsnum",jsonObject.getString("commentsnum"));
-
                     db.update("styles",value,"id=?",new String[]{id+""});
                 }else{
                     //执行写入数据库操作
@@ -108,8 +107,6 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     value.put("name",jsonObject.getString("name"));
                     value.put("modelname",jsonObject.getString("modelname"));
                     value.put("picurl",jsonObject.getString("picurl"));
-                    value.put("likes",jsonObject.getString("likes"));
-                    value.put("commentsnum",jsonObject.getString("commentsnum"));
                     db.insert("styles",null,value);
                 }
 
@@ -195,6 +192,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     value.put("stylename",jsonObject.getString("stylename"));
                     value.put("picname",jsonObject.getString("picname"));
                     value.put("time",jsonObject.getString("time"));
+                    value.put("likes",jsonObject.getString("likes"));
+                    value.put("commentsnum",jsonObject.getString("commentsnum"));
                     db.update("userfiles",value,"id=?",new String[]{id+""});
                 }else{
                     //执行写入数据库操作
@@ -204,6 +203,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
                     value.put("stylename",jsonObject.getString("stylename"));
                     value.put("picname",jsonObject.getString("picname"));
                     value.put("time",jsonObject.getString("time"));
+                    value.put("likes",jsonObject.getString("likes"));
+                    value.put("commentsnum",jsonObject.getString("commentsnum"));
                     db.insert("userfiles",null,value);
                 }
 

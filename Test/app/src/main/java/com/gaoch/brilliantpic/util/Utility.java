@@ -48,6 +48,11 @@ public class Utility {
         return (int)(dpValue*scale+0.5f);
     }
 
+    public static int px2dp(Context context,float dpValue){
+        float scale=context.getResources().getDisplayMetrics().density;
+        return (int)(dpValue/scale+0.5f);
+    }
+
 
     public static int sp2px(Context context,float spValue){
         float fontScale=context.getResources().getDisplayMetrics().scaledDensity;
@@ -132,54 +137,17 @@ public class Utility {
         }
     }
 
-    /**
-     * 按照最大范围来放大图片
-     * @param drawable
-     * @return
-     */
-    public static Drawable ReSizePic(Drawable drawable,int maxHeight,int maxWidth,Context context){
-        Bitmap bkg1=((BitmapDrawable)drawable).getBitmap();
-        float prePicWidth=bkg1.getWidth();
-        float prePicHeight=bkg1.getHeight();
-        double displayScale=(maxWidth+0.0)/maxHeight;
-        double prePicScale=prePicWidth/prePicHeight;
-        Log.e("GGG","显示区域:"+maxHeight+","+maxWidth);
-        Log.e("GGG","图片尺寸:"+prePicHeight+","+prePicWidth);
-        Log.e("GGG","显示区域比例:"+displayScale);
-        Log.e("GGG","图片比例:"+prePicScale);
-        if(prePicScale>displayScale){
-            //图片宽度过大,将宽度放大到maxWidth
-            float scaleFactor=maxWidth/prePicWidth;
-            //按照高度缩放
-            Log.e("GGG","缩放后的图片:"+(int)(prePicWidth*scaleFactor)+","+(int)(prePicHeight*scaleFactor));
-            Bitmap bkg_scaled= Bitmap.createScaledBitmap(bkg1,(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
-            return new BitmapDrawable(context.getResources(),bkg_scaled);
 
 
-        }else{
-            //背景图片长度过大，将长度放大到maxHeight
-            float scaleFactor=maxHeight/prePicHeight;
-            //按照宽度缩放
-            Log.e("GGG","缩放后的图片:"+(int)(prePicWidth*scaleFactor)+","+(int)(prePicHeight*scaleFactor));
-            Bitmap bkg_scaled= Bitmap.createScaledBitmap(bkg1,(int)(prePicWidth*scaleFactor),(int)(prePicHeight*scaleFactor), true);
-            return new BitmapDrawable(context.getResources(),bkg_scaled);
-        }
-    }
 
     /**
-     * 按照屏幕尺寸剪裁图片
+     * 按照尺寸剪裁图片
      * @param path
      * @return
      */
-    public static Drawable getCuteedBkg(String path, Context context, WindowManager windowManager){
+    public static Drawable getCuteedBkg(String path, Context context, float width,float height){
         BitmapDrawable bd=(BitmapDrawable)Drawable.createFromPath(path);
         Bitmap bkg1=bd.getBitmap();
-
-        DisplayMetrics metrics =new DisplayMetrics();
-        windowManager.getDefaultDisplay().getRealMetrics(metrics);
-
-        float width = metrics.widthPixels;
-        float height = metrics.heightPixels;
         Log.e("SimWeather","屏幕尺寸:"+width+","+height);
 
         float prePicWidth=bkg1.getWidth();
@@ -198,6 +166,7 @@ public class Utility {
             float pic_width=bkg_scaled.getWidth();
             float pic_height=bkg_scaled.getHeight();
             Bitmap bkg_nedded=Bitmap.createBitmap(bkg_scaled,(((int)pic_width-(int)width)/2),0,(int)width,(int)height);
+            Log.e("SimWeather","剪裁后的图片:"+bkg_nedded.getWidth()+","+bkg_nedded.getHeight());
             return new BitmapDrawable(context.getResources(),bkg_nedded);
 
 
@@ -210,9 +179,12 @@ public class Utility {
             float pic_width=bkg_scaled.getWidth();
             float pic_height=bkg_scaled.getHeight();
             Bitmap bkg_nedded=Bitmap.createBitmap(bkg_scaled,0,((int)pic_height-(int)height)/2,(int)width,(int)height);
+            Log.e("SimWeather","剪裁后的图片:"+bkg_nedded.getWidth()+","+bkg_nedded.getHeight());
             return new BitmapDrawable(context.getResources(),bkg_nedded);
         }
     }
+
+
     /**
      * 按照屏幕尺寸剪裁图片
      * @param drawable

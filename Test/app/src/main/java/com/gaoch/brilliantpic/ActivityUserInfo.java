@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -66,9 +67,18 @@ public class ActivityUserInfo extends AppCompatActivity {
         File bkgFile=new File(ConstValue.getBkgPath(getApplicationContext()));
 
         if(bkgFile.exists()&&bkgFile.isFile()){
-            layout_bkg.setBackground(Drawable.createFromPath(ConstValue.getBkg_blurPath(getApplicationContext())));
+            layout_bkg.setBackground(Drawable.createFromPath(ConstValue.getBkgPath(getApplicationContext())));
         }else{
             layout_bkg.setBackground(getResources().getDrawable(R.drawable.bkg_2,null));
+        }
+
+        File bkgFile1=new File(ConstValue.getBkg_blurPath(getApplicationContext()));
+        DisplayMetrics metrics =new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+        if(bkgFile1.exists()&&bkgFile1.isFile()){
+            Blur.initBkgWithResieze(layout_bkg,Utility.LoadLocalBitmap(ConstValue.getBkg_blurPath(getApplicationContext())),width,height);
         }
 
 
@@ -96,7 +106,11 @@ public class ActivityUserInfo extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Blur.destroy(layout_bkg);
+    }
 
     Handler handler = new Handler(){
         @Override
@@ -120,6 +134,7 @@ public class ActivityUserInfo extends AppCompatActivity {
                     int angle=(int)((exp_index+0.0)/thisLevelExp*360);
                     circleExp.setAngle(angle+90);
                     tv_exp.setText("Lv."+level);
+                    Log.e("GGG",angle+"");
 
 
 

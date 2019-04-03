@@ -7,6 +7,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import androidx.palette.graphics.Palette;
+
 public class ImageUtil {
 
     /**
@@ -270,6 +272,23 @@ public class ImageUtil {
     public static int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
+    }
+
+
+    /**
+     *得到主色调
+     */
+    public static int colorFromBitmap(Bitmap bitmap) {
+        final int NUMBER_OF_PALETTE_COLORS = ConstValue.colorRange;
+        final Palette palette = Palette.generate(bitmap, NUMBER_OF_PALETTE_COLORS);
+        if (palette != null && palette.getVibrantSwatch() != null) {
+            //活力色
+            return palette.getVibrantSwatch().getRgb();
+        }else if(palette!=null&&palette.getMutedSwatch()!=null){
+            //柔和色
+            return palette.getMutedSwatch().getRgb();
+        }
+        return 0;
     }
 }
 

@@ -124,6 +124,9 @@ public class ConstValue {
     public static final int expLevel=10;
 
 
+    //线程等待时间
+    public static final int thread_sleep=1000;  //ms
+
     //毛玻璃效果参数,可以动态修改
     public static int RoundCorner=50;
     public static int radius=10;
