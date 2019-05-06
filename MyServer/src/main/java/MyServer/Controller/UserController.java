@@ -58,6 +58,12 @@ public class UserController {
         return userService.getBasicInfo(account);
     }
 
+    @RequestMapping(value = "/uploadUserPic")
+    public User uploadUserFile(HttpServletRequest request, HttpServletResponse response)throws Exception {
+
+        return userService.uploadUserPic(request);
+    }
+
 
 
 

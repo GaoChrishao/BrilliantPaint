@@ -97,9 +97,9 @@ public class UserService {
 
 
             System.out.println(account+":"+password);
-            User user1= get(Long.valueOf(account),password);
-            if(user1==null)user.setAccount(-1l);
-            return user;
+            User newUser= get(Long.valueOf(account),password);
+            if(newUser==null)user.setAccount(-1l);
+            return newUser;
 
         }
     }

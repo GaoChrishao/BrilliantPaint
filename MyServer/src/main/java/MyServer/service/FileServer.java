@@ -50,7 +50,7 @@ public class FileServer {
             System.out.println("useraccount:"+useraccount+" modelname:"+modelname);
             String s[]=modelname.split("\\.");
             String fileType=s[s.length-1];
-//            String preFileName=useraccount+ct+"."+fileType;
+
             String preFileName=useraccount+ct+".jpg";
             System.out.println("开始接受图片:"+preFileName);
             saveFile(dis,preFileName);
@@ -64,7 +64,7 @@ public class FileServer {
                 return fileMessage;
             }
             System.out.println("开始处理图片");
-
+            ConstValue.isProcessing=true;
             if(processPic(preFileName,useraccount+ct,modelname)){
                 //处理成功
                 addExp(Long.valueOf(useraccount),ConstValue.exp_processpic);
@@ -147,7 +147,7 @@ public class FileServer {
         try {
             String[] args1=new String[]{ConstValue.python, "transform.py", "-i",ConstValue.img_dir_pre+inFileName,"-s",modelname, "-b","0.1","-o", ConstValue.img_dir_after+"tmp"};
             Process pr=Runtime.getRuntime().exec(args1,null,new File(ConstValue.transformPath));
-            BufferedReader in = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
                 System.out.println(line);

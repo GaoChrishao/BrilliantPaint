@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/start_ll"
+    tools:context=".ActivityStart">
+
+    <com.redbooth.WelcomeCoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color1"
+        app:showIndicators="true"
+        app:indicatorUnselected="#99b7b7b7"
+        app:indicatorSelected="#bfb7b7b7"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

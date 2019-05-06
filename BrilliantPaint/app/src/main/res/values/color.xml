@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#86543E</color>
+    <color name="colorPrimaryDark">#724734</color>
+    <color name="colorAccent">#86543E</color>
+    <color name="colorTitle">#ffffff</color>
+    <color name="colorTitleSecond">#F5F5F5</color>
+    <color name="colorUserName">#1A1A1A</color>
+    <color name="colorDes">#1A1A1A</color>
+    <color name="colorBackgroundForecast">#58000000</color>
+    <color name="LogincolorText">#DFFFFFFF</color>
+    <color name="bookDesTextColot">#e9e5e5</color>
+    <color name="textDialor">#383838</color>
+    <color name="uncheckedColor">#8B8B8B</color>
+
+
+    <color name="colorChoseLines">#95C2EDF3</color>
+    <color name="colorUnChoseLines">#00FFFFFF</color>
+
+    <color name="color1">#79C77C</color>
+    <color name="color2">#ABDFD9</color>
+    <color name="color3">#72D3DF</color>
+    <color name="color4">#579EC9</color>
+    <color name="color5">#2E84D6</color>
+    <color name="color6">#1976d2</color>
+
+
+
+    <color name="g1_l">#8bc34a</color>
+    <color name="g1_r">#4caf50</color>
+    <color name="g2_l">#543029</color>
+    <color name="g2_r">#A6735C</color>
+    <color name="g3_l">#4CAF79</color>
+    <color name="g3_r">#4CAF93</color>
+    <color name="g4_l">#4CAF93</color>
+    <color name="g4_r">#4CAFAF</color>
+    <color name="g5_l">#FFFFFF</color>
+    <color name="g5_r">#818181</color>
+
+
+    <color name="colorOverlay">#54818181</color>
+    <color name="colorOverlay_blue">#544CAFAF</color>
+    <color name="colorAccentOverlay">#1400bcd4</color>
+    <color name="colorTransparentBlack">#14000000</color>
+    <color name="colorPrimaryTransparent">#6400bcd4</color>
+
+    <color name="colorExp">#91ffffff</color>
+    <color name="colorExp_un">#22ffffff</color>
+</resources>

@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.gaoch.brilliantpic"
+        minSdkVersion 23
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
+
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    implementation 'com.redbooth:WelcomeCoordinator:1.0.1'
+    implementation 'com.github.chenupt.android:springindicator:1.0.2@aar'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.github.bumptech.glide:glide:4.5.0'
+    implementation 'com.github.xiaohaibin:XBanner:1.6.4'
+    implementation 'com.yinglan.shadowimageview:shadowimageview:1.0.4'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.eightbitlab:blurview:1.5.0'
+    implementation 'jp.wasabeef:glide-transformations:4.0.1'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.github.yangjie10930:EpMedia:v0.9.5'
+    implementation 'com.github.HuanTanSheng:EasyPhotos:2.4.0'
+    implementation 'org.jcodec:jcodec-android:0.2.3'
+
+}
