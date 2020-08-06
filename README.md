@@ -2,7 +2,15 @@
 
 后端使用SpringBoot框架
 
-![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/主界面展示.gif)
+![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/图片1.png)
+
+![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/图片2.png)
+
+![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/图片3.png)
+
+![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/图片4.png)
+
+![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/图片5.png)
 ---
 ## 以下为前端app用到的开源项目
 [欢迎界面](https://github.com/txusballesteros/welcome-coordinator)
