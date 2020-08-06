@@ -1,7 +1,8 @@
 妙笔生画(2019年计算机设计大赛参赛作品)
 
 后端使用SpringBoot框架
-![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/pic/p1.png)
+
+![截图](https://github.com/GaoChrishao/BrilliantPaint/raw/master/主界面展示.gif)
 ---
 ## 以下为前端app用到的开源项目
 [欢迎界面](https://github.com/txusballesteros/welcome-coordinator)
